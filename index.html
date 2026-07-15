@@ -942,10 +942,7 @@
 (function(){
   var STORAGE_KEY = 'reading-app-library';
   var PASSWORD_KEY = 'reading-app-password';
-
-  // Supabase 配置
-  var SUPABASE_URL = 'https://twblartdcnmenbzkkset.supabase.co';
-  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3YmxhcnRkY25tZW5iemtrc2V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwMzE1NjAsImV4cCI6MjA2NjYwNzU2MH0.5dpDv-0xSb1pzmmrtIJA_1Jeshnev';
+  var GIST_ID = 'b136546e5931022e394b26b1ae53092d';
 
   var state = {
     books: [],
@@ -1004,76 +1001,6 @@
     t._timer = setTimeout(function(){ t.classList.remove('show'); }, 1800);
   }
 
-  // Gist 代理服务器配置
-  var GIST_API = 'http://localhost:8787';
-  var GITHUB_TOKEN = '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';
-  var GIST_ID = 'b136546e5931022e394b26b1ae53092d'; // 首次会创建
-
-  // Gist 保存
-  async function saveToCloud(data){
-    try {
-      var payload = {
-        description: '书斋读书笔记备份',
-        files: {
-          'reading-notes.json': {
-            content: JSON.stringify(data, null, 2)
-          }
-        }
-      };
-
-      var url = GIST_ID
-        ? GIST_API + '/' + GIST_ID
-        : GIST_API;
-
-      var method = GIST_ID ? 'PATCH' : 'POST';
-
-      var response = await fetch(url, {
-        method: method,
-        headers: {
-          'Authorization': 'Bearer ' + GITHUB_TOKEN,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok && method === 'POST') {
-        var result = await response.json();
-        GIST_ID = result.id;
-        localStorage.setItem('gist_id', GIST_ID);
-      }
-      return true;
-    } catch(e) {
-      console.log('Cloud save failed:', e);
-      return false;
-    }
-  }
-
-  // Gist 加载
-  async function loadFromCloud(){
-    try {
-      var storedGistId = localStorage.getItem('gist_id');
-      if (!storedGistId) return null;
-
-      var response = await fetch(GIST_API + '/' + storedGistId, {
-        headers: {
-          'Authorization': 'Bearer ' + GITHUB_TOKEN
-        }
-      });
-
-      if (!response.ok) return null;
-
-      var result = await response.json();
-      GIST_ID = storedGistId;
-
-      if (result.files && result.files['reading-notes.json']) {
-        return JSON.parse(result.files['reading-notes.json'].content);
-      }
-    } catch(e) {
-      console.log('Cloud load failed:', e);
-    }
-    return null;
-  }
-
   async function loadData(){
     try{
       // 先尝试从云端加载
@@ -1113,11 +1040,6 @@
       };
       // 保存到本地
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      // 防抖保存到云端
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(function(){
-        saveToCloud(data);
-      }, 2000);
     }catch(e){
       showToast('保存失败');
     }
