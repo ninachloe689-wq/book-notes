@@ -1004,9 +1004,10 @@
     t._timer = setTimeout(function(){ t.classList.remove('show'); }, 1800);
   }
 
-  // GitHub Gist 配置
+  // Gist 代理服务器配置
+  var GIST_API = 'http://localhost:8787';
   var GITHUB_TOKEN = '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';
-  var GIST_ID = 'b136546e5931022e394b26b1ae53092d';
+  var GIST_ID = 'b136546e5931022e394b26b1ae53092d'; // 首次会创建
 
   // Gist 保存
   async function saveToCloud(data){
@@ -1020,17 +1021,27 @@
         }
       };
 
-      var response = await fetch('https://api.github.com/gists/' + GIST_ID, {
-        method: 'PATCH',
+      var url = GIST_ID
+        ? GIST_API + '/' + GIST_ID
+        : GIST_API;
+
+      var method = GIST_ID ? 'PATCH' : 'POST';
+
+      var response = await fetch(url, {
+        method: method,
         headers: {
           'Authorization': 'Bearer ' + GITHUB_TOKEN,
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github+json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
 
-      return response.ok;
+      if (response.ok && method === 'POST') {
+        var result = await response.json();
+        GIST_ID = result.id;
+        localStorage.setItem('gist_id', GIST_ID);
+      }
+      return true;
     } catch(e) {
       console.log('Cloud save failed:', e);
       return false;
@@ -1040,16 +1051,19 @@
   // Gist 加载
   async function loadFromCloud(){
     try {
-      var response = await fetch('https://api.github.com/gists/' + GIST_ID, {
+      var storedGistId = localStorage.getItem('gist_id');
+      if (!storedGistId) return null;
+
+      var response = await fetch(GIST_API + '/' + storedGistId, {
         headers: {
-          'Authorization': 'Bearer ' + GITHUB_TOKEN,
-          'Accept': 'application/vnd.github+json'
+          'Authorization': 'Bearer ' + GITHUB_TOKEN
         }
       });
 
       if (!response.ok) return null;
 
       var result = await response.json();
+      GIST_ID = storedGistId;
 
       if (result.files && result.files['reading-notes.json']) {
         return JSON.parse(result.files['reading-notes.json'].content);
