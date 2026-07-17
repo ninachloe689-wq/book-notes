@@ -242,7 +242,16 @@
 
   /* motto row */
   .motto-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
     margin-bottom:10px;
+  }
+  .motto-left{
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
   }
   .motto-row .motto-display, .motto-row .motto-empty{
     font-size:14px;
@@ -1414,24 +1423,26 @@
       var counts = { all: state.books.length, want: 0, reading: 0, done: 0 };
       state.books.forEach(function(b){ counts[b.status || 'want']++; });
 
-      // 第一行：座右铭
-      html += '<div class="motto-row">' + getMottoDisplay() + '</div>';
-
-      // 第二行：筛选标签 + 打卡 + 添加书本
+      // 第一行：座右铭 + 打卡
       var streak = getCurrentStreak();
       var checkedToday = isCheckedIn(todayStr());
+      html += '<div class="motto-row">'
+        + '<span class="motto-left">' + getMottoDisplay() + '</span>'
+        + '<div class="checkin-mini">'
+        +   '<span class="streak-text" data-action="open-checkin-detail">' + streak + ' 天</span>'
+        +   '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
+        +     (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
+        +   '</button>'
+        + '</div>'
+        + '</div>';
+
+      // 第二行：筛选标签 + 添加书本
       html += '<div class="shelf-actions">'
         + '<div class="filter-tabs">'
         + renderFilterTab('all', '全部', counts.all)
         + renderFilterTab('want', '想读', counts.want)
         + renderFilterTab('reading', '在读', counts.reading)
         + renderFilterTab('done', '读完', counts.done)
-        + '</div>'
-        + '<div class="checkin-mini">'
-        +   '<span class="streak-text" data-action="open-checkin-detail">' + streak + ' 天</span>'
-        +   '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
-        +     (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
-        +   '</button>'
         + '</div>'
         + '<button class="btn btn-primary btn-sm" data-action="open-add-book"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>'
         + '</div>';
