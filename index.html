@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>书斋 - 读书笔记</title>
+<title>读书笔记</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Noto+Serif+SC:wght@400;500;600&family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&family=ZCOOL+XiaoWei&family=KaiTi&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#F2F2ED;
@@ -39,96 +41,24 @@
     min-height:100vh;
   }
   .app{
-    max-width:920px;
+    max-width:900px;
     margin:0 auto;
-    padding:40px 24px 80px;
+    padding:24px 20px 60px;
   }
   .serif{ font-family:'Source Serif 4','Noto Serif SC',Georgia,serif; }
-
-  /* 登录界面 */
-  .login-screen {
-    position:fixed;
-    inset:0;
-    background:var(--bg);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:1000;
-    padding:20px;
-  }
-  .login-box{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:var(--radius-l);
-    padding:40px;
-    max-width:380px;
-    width:100%;
-    text-align:center;
-  }
-  .login-box h1{
-    font-size:28px;
-    font-weight:600;
-    margin:0 0 8px;
-    font-family:'Source Serif 4','Noto Serif SC',serif;
-  }
-  .login-box p{
-    font-size:14px;
-    color:var(--ink-soft);
-    margin:0 0 24px;
-  }
-  .login-box input{
-    width:100%;
-    padding:14px 16px;
-    border:1px solid var(--line);
-    border-radius:var(--radius-s);
-    font-size:16px;
-    font-family:inherit;
-    text-align:center;
-    margin-bottom:12px;
-  }
-  .login-box input:focus{
-    outline:none;
-    border-color:var(--navy);
-  }
-  .login-box .error{
-    color:var(--danger);
-    font-size:13px;
-    margin-bottom:12px;
-    display:none;
-  }
-  .login-box .hint{
-    color:var(--ink-faint);
-    font-size:12px;
-    margin-top:20px;
-  }
-  .login-box .btn-primary{
-    width:100%;
-    padding:14px;
-    background:var(--navy);
-    color:#fff;
-    border:none;
-    border-radius:var(--radius-s);
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    font-family:inherit;
-  }
-  .login-box .btn-primary:hover{
-    background:#1f2b40;
-  }
 
   /* header */
   .app-header{
     display:flex;
-    align-items:flex-end;
+    align-items:center;
     justify-content:space-between;
-    margin-bottom:36px;
-    gap:16px;
+    margin-bottom:16px;
+    gap:12px;
     flex-wrap:wrap;
   }
-  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand{ display:flex; align-items:center; gap:8px; }
   .brand-mark{
-    width:34px;height:34px;flex:none;
+    width:24px;height:24px;flex:none;
     border-radius:4px;
     background:var(--navy);
     position:relative;
@@ -136,23 +66,45 @@
   .brand-mark::before,.brand-mark::after{
     content:"";
     position:absolute;
-    top:6px;bottom:6px;
+    top:4px;bottom:4px;
     width:2px;
     background:rgba(255,255,255,0.55);
   }
-  .brand-mark::before{ left:11px; }
-  .brand-mark::after{ left:17px; }
+  .brand-mark::before{ left:8px; }
+  .brand-mark::after{ left:12px; }
   .brand h1{
-    font-size:22px;
+    font-size:16px;
     font-weight:600;
     margin:0;
-    letter-spacing:-0.01em;
   }
-  .brand p{
-    margin:2px 0 0;
-    font-size:13px;
-    color:var(--ink-soft);
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    position:relative;
   }
+  .user-email-btn{
+    font-size:12px;
+    color:var(--ink-faint);
+    cursor:pointer;
+  }
+  .user-email-btn:hover{ color:var(--ink); }
+  .user-dropdown{
+    position:absolute;
+    top:100%;
+    right:0;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-m);
+    padding:8px;
+    box-shadow:var(--shadow);
+    z-index:10;
+  }
+  .brand .user-email{
+    font-size:12px;
+    color:var(--ink-faint);
+  }
+  .logout-btn{ font-size:12px; }
   .btn{
     display:inline-flex;
     align-items:center;
@@ -184,25 +136,45 @@
   .btn-danger{ color:var(--danger); }
   .btn-sm{ padding:6px 12px; font-size:13px; }
   .btn-full{ width:100%; justify-content:center; }
-  .icon{ width:16px; height:16px; flex:none; }
+  .icon{ width:14px; height:14px; flex:none; }
 
   /* library grid */
   .shelf-label{
     display:flex; align-items:baseline; justify-content:space-between;
-    margin-bottom:14px;
+    margin-bottom:12px;
   }
-  .shelf-label span{ font-size:13px; color:var(--ink-faint); }
+  .shelf-label span{ font-size:12px; color:var(--ink-faint); }
+  .shelf-label .motto-display, .shelf-label .motto-empty{
+    font-size:13px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    max-width:60%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .shelf-label .motto-display:hover, .shelf-label .motto-empty:hover{ color:var(--ink); }
+  .shelf-label .motto-empty{ font-style:italic; }
+  .motto-edit-input{
+    font-size:13px;
+    color:var(--ink);
+    border:1px solid var(--navy);
+    border-radius:var(--radius-s);
+    padding:4px 8px;
+    max-width:60%;
+    font-family:inherit;
+  }
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
-    gap:16px;
+    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+    gap:12px;
   }
   .book-card{
     position:relative;
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:var(--radius-m);
-    padding:18px 18px 16px 20px;
+    padding:14px 14px 12px 18px;
     cursor:pointer;
     overflow:hidden;
     transition:border-color .15s ease, transform .1s ease;
@@ -213,29 +185,29 @@
     position:absolute; left:0; top:0; bottom:0; width:5px;
   }
   .book-card h3{
-    font-size:17px;
+    font-size:15px;
     font-weight:600;
-    margin:0 0 4px;
+    margin:0 0 3px;
     line-height:1.35;
     padding-right:4px;
   }
   .book-card .author{
-    font-size:13px;
+    font-size:12px;
     color:var(--ink-soft);
     font-style:italic;
-    margin:0 0 14px;
+    margin:0 0 10px;
     font-family:'Source Serif 4','Noto Serif SC',serif;
   }
   .book-meta{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    font-size:12px;
+    font-size:11px;
     color:var(--ink-faint);
   }
   .chip{
     font-size:11px;
-    padding:3px 8px;
+    padding:2px 7px;
     border-radius:20px;
     background:var(--line-soft);
     color:var(--ink-soft);
@@ -256,29 +228,54 @@
 
   .progress-track{
     width:100%;
-    height:4px;
-    border-radius:4px;
+    height:3px;
+    border-radius:3px;
     background:var(--line-soft);
     overflow:hidden;
-    margin-top:10px;
+    margin-top:8px;
   }
   .progress-fill{
     height:100%;
     background:var(--navy);
-    border-radius:4px;
+    border-radius:3px;
+  }
+
+  /* motto row */
+  .motto-row{
+    margin-bottom:10px;
+  }
+  .motto-row .motto-display, .motto-row .motto-empty{
+    font-size:14px;
+    font-family:'KaiTi','STKaiti','楷体',serif;
+    font-style:italic;
+    color:var(--ink-soft);
+    cursor:pointer;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .motto-row .motto-display:hover, .motto-row .motto-empty:hover{ color:var(--ink); }
+  .motto-row .motto-empty{ color:var(--ink-faint); }
+
+  /* shelf actions row */
+  .shelf-actions{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
   }
 
   /* filter tabs */
   .filter-tabs{
     display:flex;
-    gap:6px;
-    margin-bottom:18px;
+    gap:4px;
   }
   .filter-tab{
     font-family:inherit;
-    font-size:13px;
+    font-size:12px;
     font-weight:500;
-    padding:7px 13px;
+    padding:5px 11px;
     border-radius:20px;
     border:1px solid var(--line);
     background:var(--surface);
@@ -292,7 +289,7 @@
     color:#fff;
   }
 
-  /* status selector */
+  /* status selector (used in forms) */
   .status-selector{ display:flex; gap:8px; }
   .status-option{
     flex:1;
@@ -314,7 +311,7 @@
     color:var(--navy);
   }
 
-  /* progress editor */
+  /* progress editor on detail page */
   .progress-editor{
     display:flex;
     align-items:center;
@@ -355,13 +352,13 @@
   /* search */
   .search-box{
     position:relative;
-    margin-bottom:18px;
+    margin-bottom:12px;
   }
   .search-box input{
     width:100%;
     font-family:inherit;
-    font-size:14px;
-    padding:10px 14px 10px 38px;
+    font-size:13px;
+    padding:8px 12px 8px 34px;
     border:1px solid var(--line);
     border-radius:var(--radius-s);
     background:var(--surface);
@@ -370,9 +367,9 @@
   .search-box input:focus{ outline:none; border-color:var(--navy); }
   .search-box .search-icon{
     position:absolute;
-    left:12px; top:50%;
+    left:10px; top:50%;
     transform:translateY(-50%);
-    width:16px; height:16px;
+    width:14px; height:14px;
     color:var(--ink-faint);
     pointer-events:none;
   }
@@ -434,45 +431,46 @@
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:var(--radius-m);
-    padding:20px;
-    margin-bottom:20px;
+    padding:16px;
+    margin-bottom:14px;
   }
   .panel h3{
-    font-size:15px;
+    font-size:14px;
     font-weight:600;
-    margin:0 0 14px;
+    margin:0 0 12px;
   }
-  .field{ margin-bottom:12px; }
+  .field{ margin-bottom:10px; }
   .field label{
     display:block;
     font-size:12px;
     color:var(--ink-soft);
-    margin-bottom:5px;
+    margin-bottom:4px;
     font-weight:500;
   }
   .field input, .field textarea{
     width:100%;
     font-family:inherit;
-    font-size:14px;
-    padding:9px 11px;
+    font-size:13px;
+    padding:8px 10px;
     border:1px solid var(--line);
     border-radius:var(--radius-s);
     background:#FDFDFB;
     color:var(--ink);
     resize:vertical;
   }
-  .field textarea{ min-height:160px; line-height:1.6; }
+  .field textarea{ min-height:120px; line-height:1.5; }
   .field input:focus, .field textarea:focus{
     outline:none;
     border-color:var(--navy);
     background:#fff;
   }
-  .field-row{ display:flex; gap:12px; }
+  .field-row{ display:flex; gap:10px; }
   .field-row .field{ flex:1; }
   .panel-actions{
     display:flex;
     gap:8px;
     justify-content:flex-end;
+    margin-top:12px;
     margin-top:16px;
   }
 
@@ -653,93 +651,225 @@
     font-size:14px;
   }
 
-  /* backup section in header */
-  .header-actions{
-    display:flex;
-    gap:8px;
-    align-items:center;
+  @media (max-width:520px){
+    .app{ padding:24px 16px 60px; }
+    .grid{ grid-template-columns:1fr 1fr; }
+    .field-row{ flex-direction:column; gap:0; }
   }
 
-  /* 阅读统计 */
-  .stats-bar{
+  /* auth screen */
+  .auth-wrap{
+    max-width:380px;
+    margin:60px auto 0;
+  }
+  .auth-wrap .brand{ justify-content:center; margin-bottom:28px; }
+  .auth-tabs{
     display:flex;
-    gap:24px;
+    gap:6px;
+    margin-bottom:18px;
+  }
+  .auth-tab{
+    flex:1;
+    text-align:center;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:500;
+    padding:9px 8px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .auth-tab.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+  .auth-error{
+    font-size:13px;
+    color:var(--danger);
+    background:var(--rose-soft);
+    padding:9px 12px;
+    border-radius:var(--radius-s);
+    margin-bottom:14px;
+    line-height:1.5;
+  }
+  .auth-hint{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    margin-top:14px;
+  }
+  .user-badge{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .user-badge .user-email{
+    max-width:160px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+
+  /* dashboard */
+  .dashboard{
+    margin-bottom:16px;
+  }
+  .stats-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .stats-row .total-books{
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+  }
+  .stats-row .breakdown{
+    display:flex;
+    gap:8px;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .stats-row .breakdown span{
+    display:flex;
+    align-items:center;
+    gap:3px;
+  }
+  .stats-row .checkin-line{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .stats-row .streak-text{
+    font-size:12px;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .stats-row .streak-text:hover{ color:var(--ink); }
+  .checkin-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    border:none;
+    background:var(--moss);
+    color:#fff;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:500;
+    padding:5px 12px;
+    border-radius:var(--radius-s);
+    cursor:pointer;
+    transition:opacity .15s ease;
+  }
+  .checkin-btn:hover{ opacity:0.9; }
+  .checkin-btn.done{
+    background:var(--moss-soft);
+    color:var(--moss);
+    cursor:default;
+  }
+
+  /* checkin detail page */
+  .checkin-detail-header{
     margin-bottom:24px;
-    padding:16px 20px;
+  }
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    color:var(--ink-soft);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px 0;
+    margin-bottom:16px;
+    font-family:inherit;
+  }
+  .back-link:hover{ color:var(--ink); }
+  .checkin-stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    gap:16px;
+    margin-bottom:28px;
+  }
+  .checkin-stat-card{
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:var(--radius-m);
+    padding:18px 20px;
   }
-  .stat-item{
-    text-align:center;
-    flex:1;
-  }
-  .stat-num{
-    font-size:28px;
-    font-weight:700;
-    color:var(--navy);
-    font-family:'Source Serif 4','Noto Serif SC',serif;
-  }
-  .stat-label{
+  .checkin-stat-card .stat-label{
     font-size:12px;
     color:var(--ink-faint);
-    margin-top:2px;
+    font-weight:500;
+    margin:0 0 8px;
   }
-  .stat-item.highlight .stat-num{ color:var(--gold); }
-
-  /* 打卡按钮 */
-  .checkin-bar{
+  .checkin-stat-card .stat-value{
+    font-size:28px;
+    font-weight:600;
+    font-family:'Source Serif 4','Noto Serif SC',serif;
+    margin:0;
+    color:var(--ink);
+  }
+  .checkin-stat-card .stat-unit{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-left:4px;
+  }
+  .checkin-calendar-section h3{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-faint);
+    font-weight:600;
+    margin:0 0 14px;
+  }
+  .checkin-calendar{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    gap:4px;
+  }
+  .checkin-calendar .weekday-label{
+    font-size:11px;
+    color:var(--ink-faint);
+    text-align:center;
+    margin-bottom:4px;
+  }
+  .checkin-day{
+    aspect-ratio:1;
+    border-radius:4px;
+    background:var(--line-soft);
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:16px;
-    padding:16px;
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:var(--radius-m);
-    margin-bottom:16px;
+    font-size:12px;
+    color:var(--ink-faint);
   }
-  .checkin-btn{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:12px 24px;
-    background:var(--navy);
-    color:#fff;
-    border:none;
-    border-radius:var(--radius-s);
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    font-family:inherit;
-    transition:background .15s;
-  }
-  .checkin-btn:hover{ background:#1f2b40; }
-  .checkin-btn.checked{
-    background:var(--moss);
-    cursor:default;
-  }
-  .checkin-btn.checked:hover{ background:var(--moss); }
-  .checkin-streak{
-    font-size:13px;
-    color:var(--ink-soft);
-  }
-  .checkin-streak strong{
-    color:var(--gold);
-    font-size:16px;
-  }
+  .checkin-day.filled{ background:var(--moss); color:#fff; }
+  .checkin-day.today{ border:1.5px solid var(--ink-faint); box-sizing:border-box; }
+  .checkin-day.empty{ background:transparent; }
 
-  /* 阅读热力图 */
-  .heatmap-section{
-    margin-bottom:24px;
-  }
-  .heatmap-header{
+  .section-label{
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    margin-bottom:12px;
+    justify-content:space-between;
+    margin:32px 0 14px;
   }
-  .heatmap-header h3{
+  .section-label h3{
     font-size:13px;
     text-transform:uppercase;
     letter-spacing:.06em;
@@ -747,226 +877,53 @@
     font-weight:600;
     margin:0;
   }
-  .heatmap-streak{
-    font-size:12px;
-    color:var(--ink-soft);
-  }
-  .heatmap-streak strong{
-    color:var(--gold);
-    font-size:14px;
-  }
-  .heatmap-grid{
-    display:flex;
-    gap:3px;
-    overflow-x:auto;
-    padding-bottom:8px;
-  }
-  .heatmap-week{
-    display:flex;
-    flex-direction:column;
-    gap:3px;
-  }
-  .heatmap-day{
-    width:14px;
-    height:14px;
-    border-radius:3px;
-    background:var(--line-soft);
-    cursor:default;
-  }
-  .heatmap-day.level-1{ background:#c6e48b; }
-  .heatmap-day.level-2{ background:#7bc96f; }
-  .heatmap-day.level-3{ background:#239a3b; }
-  .heatmap-day.level-4{ background:#196127; }
-  .heatmap-labels{
-    display:flex;
-    gap:3px;
-    margin-top:6px;
-  }
-  .heatmap-label{
-    font-size:10px;
-    color:var(--ink-faint);
-    width:calc(14px * 7 + 3px * 6);
-  }
-  .heatmap-months{
-    display:flex;
-    gap:3px;
-    margin-bottom:4px;
-    font-size:10px;
-    color:var(--ink-faint);
-  }
-  .heatmap-months span{
-    padding-left:2px;
-  }
-  .heatmap-legend{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:12px;
-    color:var(--ink-soft);
-  }
-  .heatmap-legend span{
-    width:14px;
-    height:14px;
-    border-radius:3px;
-    background:var(--line-soft);
-  }
-  .heatmap-legend span.active{ background:var(--moss); }
-  .heatmap-bar{
-    display:flex;
-    gap:3px;
-    margin-top:10px;
-  }
-  .heatmap-bar-day{
-    flex:1;
-    height:20px;
-    border-radius:4px;
-    background:var(--line-soft);
-  }
-  .heatmap-bar-day.has{ background:var(--moss); }
-  .heatmap-bar-day.today{ border:2px solid var(--navy); }
-  .heatmap-bar-labels{
-    display:flex;
-    justify-content:space-between;
-    margin-top:4px;
-    font-size:11px;
-    color:var(--ink-faint);
-  }
 
-  /* 金句墙 */
-  .quote-wall{
-    margin-bottom:24px;
+  /* book detail */
+  .detail-header{ margin-bottom:24px; }
   }
-  .quote-wall-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
-    gap:12px;
-    margin-top:14px;
-  }
-  .quote-card{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:var(--radius-m);
-    padding:14px 16px;
-    border-left:3px solid var(--gold);
-  }
-  .quote-card p{
-    font-size:13.5px;
-    line-height:1.6;
-    color:var(--ink);
-    margin:0 0 8px;
-    font-family:'Source Serif 4','Noto Serif SC',serif;
-    font-style:italic;
-  }
-  .quote-card .quote-from{
-    font-size:12px;
-    color:var(--ink-faint);
-    font-style:normal;
-    font-family:inherit;
-  }
-  .quote-empty{
-    text-align:center;
-    padding:40px;
-    color:var(--ink-faint);
-    font-size:14px;
-  }
-
-  /* 随机回顾 */
-  .review-card{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:var(--radius-m);
-    padding:20px;
-    margin-top:14px;
-  }
-  .review-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:12px;
-  }
-  .review-header h4{
-    font-size:15px;
-    font-weight:600;
-    margin:0;
-  }
-  .review-book{
-    font-size:12px;
-    color:var(--ink-faint);
-    margin:0;
-  }
-  .review-content{
-    font-size:14px;
-    line-height:1.7;
-    color:var(--ink);
-    font-family:'Source Serif 4','Noto Serif SC',serif;
-    white-space:pre-wrap;
-    margin:0;
-  }
-  .review-refresh{
-    background:none;
-    border:1px solid var(--line);
-    padding:6px 10px;
-    border-radius:var(--radius-s);
-    cursor:pointer;
-    font-size:12px;
-    color:var(--ink-soft);
-    font-family:inherit;
-  }
-  .review-refresh:hover{ border-color:var(--ink-faint); }
-
-  .section-toggle{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    cursor:pointer;
-    user-select:none;
-  }
-  .section-toggle .arrow{
-    transition:transform .2s;
-  }
-  .section-toggle.collapsed .arrow{ transform:rotate(-90deg); }
-  .section-toggle.collapsed + *{ display:none; }
-
-  @media (max-width:520px){
-    .app{ padding:24px 16px 60px; }
-    .grid{ grid-template-columns:1fr 1fr; }
-    .field-row{ flex-direction:column; gap:0; }
+  @media (max-width:640px){
+    .stats-row{ flex-direction:column; align-items:flex-start; }
+    .stats-row .checkin-line{ margin-left:0; }
+    .checkin-btn{ width:100%; justify-content:center; }
   }
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
+<div class="app" id="app">
+  <div class="loading-state">正在打开书架…</div>
+</div>
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (function(){
-  var STORAGE_KEY = 'reading-app-library';
-  var PASSWORD_KEY = 'reading-app-password';
-  var GIST_ID = 'b136546e5931022e394b26b1ae53092d';
+  var SUPABASE_URL = 'https://twblartdcnmenbzkkset.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3YmxhcnRkY25tZW5iemtrc2V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMDAyODYsImV4cCI6MjA5OTY3NjI4Nn0._diS8l-mSYCVbjwztpUG4ScqaB4U9Hr-eJ_w_edUFA8';
+  var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var state = {
     books: [],
     chapters: [],
-    view: 'library',
+    checkins: [],          // array of 'YYYY-MM-DD' strings, unique
+    view: 'library',        // 'library' | 'book' | 'checkin'
     selectedBookId: null,
     showAddBook: false,
     openChapterId: null,
-    editingChapterId: null,
+    editingChapterId: null, // chapter currently in edit form
     showAddChapter: false,
-    pendingDelete: null,
+    pendingDelete: null,    // { type:'book'|'chapter', id }
     loaded: false,
-    libraryFilter: 'all',
+    libraryFilter: 'all',   // 'all' | 'want' | 'reading' | 'done'
     searchQuery: '',
     draftBookTitle: '',
     draftBookAuthor: '',
     draftBookStatus: 'want',
     draftBookProgress: 0,
-    reviewChapterId: null,
-    quoteWallCollapsed: false,
-    statsCollapsed: false,
-    reviewCollapsed: false,
-    heatmapCollapsed: false,
-    checkinDates: []  // 存储打卡日期 ['2024-01-15', ...]
+    session: null,
+    authMode: 'login',      // 'login' | 'register'
+    authEmail: '',
+    authError: '',
+    authLoading: false
   };
 
   var STATUS_META = {
@@ -987,6 +944,17 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
   }
 
+  function getMotto(){
+    return localStorage.getItem('bookshelf_motto') || '';
+  }
+  function setMotto(text){
+    localStorage.setItem('bookshelf_motto', text);
+  }
+  function getMottoDisplay(){
+    var m = getMotto();
+    return m ? '<span class="motto-display" data-action="edit-motto">' + escapeHtml(m) + '</span>' : '<span class="motto-empty" data-action="edit-motto">添加座右铭</span>';
+  }
+
   function escapeHtml(str){
     return (str || '').replace(/[&<>"']/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
@@ -1002,47 +970,156 @@
   }
 
   async function loadData(){
-    try{
-      // 先尝试从云端加载
-      var cloudData = await loadFromCloud();
-      if (cloudData) {
-        state.books = cloudData.books || [];
-        state.chapters = cloudData.chapters || [];
-        state.checkinDates = cloudData.checkinDates || [];
-        // 同时保存到本地作为备份
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          books: state.books,
-          chapters: state.chapters,
-          checkinDates: state.checkinDates
-        }));
-      } else {
-        // 云端没有，从本地加载
-        var stored = localStorage.getItem(STORAGE_KEY);
-        if (stored){
-          var parsed = JSON.parse(stored);
-          state.books = parsed.books || [];
-          state.chapters = parsed.chapters || [];
-          state.checkinDates = parsed.checkinDates || [];
-        }
-      }
-    }catch(e){}
+    var sessionRes = await supabaseClient.auth.getSession();
+    state.session = sessionRes.data ? sessionRes.data.session : null;
     state.loaded = true;
+
+    supabaseClient.auth.onAuthStateChange(function(event, session){
+      state.session = session;
+      if (event === 'SIGNED_IN'){
+        loadUserData();
+      } else if (event === 'SIGNED_OUT'){
+        state.books = [];
+        state.chapters = [];
+        state.checkins = [];
+        state.view = 'library';
+        state.selectedBookId = null;
+        render();
+      }
+    });
+
+    if (state.session){
+      showToast('加载中...');
+      await loadUserData();
+    } else {
+      render();
+    }
+  }
+
+  async function loadUserData(){
+    try{
+      var userId = state.session.user.id;
+      var result = await supabaseClient
+        .from('user_data')
+        .select('data')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (result.error) throw result.error;
+      if (result.data && result.data.data){
+        state.books = result.data.data.books || [];
+        state.chapters = result.data.data.chapters || [];
+        state.checkins = result.data.data.checkins || [];
+      } else {
+        state.books = [];
+        state.chapters = [];
+        state.checkins = [];
+      }
+    }catch(e){
+      showToast('读取云端数据失败，请检查网络后重试');
+    }
     render();
   }
 
-  var saveTimeout = null;
-  function persist(){
+  async function persist(){
+    if (!state.session) return;
     try{
-      var data = {
-        books: state.books,
-        chapters: state.chapters,
-        checkinDates: state.checkinDates
-      };
-      // 保存到本地
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      var userId = state.session.user.id;
+      var result = await supabaseClient
+        .from('user_data')
+        .upsert({
+          user_id: userId,
+          data: { books: state.books, chapters: state.chapters, checkins: state.checkins },
+          updated_at: new Date().toISOString()
+        });
+      if (result.error) throw result.error;
     }catch(e){
-      showToast('保存失败');
+      showToast('保存失败，请检查网络后重试');
     }
+  }
+
+  /* ---------- auth ---------- */
+
+  function translateAuthError(msg){
+    if (!msg) return '出错了，请重试';
+    if (msg.indexOf('Invalid login credentials') !== -1) return '邮箱或密码不正确';
+    if (msg.indexOf('User already registered') !== -1) return '该邮箱已注册，请直接登录';
+    if (msg.indexOf('Email not confirmed') !== -1) return '请先前往邮箱完成验证后再登录';
+    if (msg.indexOf('Password should be at least') !== -1) return '密码至少需要 6 位';
+    if (msg.indexOf('Unable to validate email address') !== -1) return '邮箱格式不正确';
+    return msg;
+  }
+
+  async function handleLogin(){
+    var emailEl = document.getElementById('auth-email');
+    var passEl = document.getElementById('auth-password');
+    var email = emailEl ? emailEl.value.trim() : '';
+    var password = passEl ? passEl.value : '';
+    if (!email || !password){
+      state.authError = '请填写邮箱和密码';
+      render();
+      return;
+    }
+    state.authEmail = email;
+    state.authLoading = true;
+    state.authError = '';
+    render();
+    var result = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+    state.authLoading = false;
+    if (result.error){
+      state.authError = translateAuthError(result.error.message);
+      render();
+      return;
+    }
+    state.session = result.data.session;
+    await loadUserData();
+  }
+
+  async function handleRegister(){
+    var emailEl = document.getElementById('auth-email');
+    var passEl = document.getElementById('auth-password');
+    var email = emailEl ? emailEl.value.trim() : '';
+    var password = passEl ? passEl.value : '';
+    if (!email || !password){
+      state.authError = '请填写邮箱和密码';
+      render();
+      return;
+    }
+    if (password.length < 6){
+      state.authError = '密码至少需要 6 位';
+      render();
+      return;
+    }
+    state.authEmail = email;
+    state.authLoading = true;
+    state.authError = '';
+    render();
+    var result = await supabaseClient.auth.signUp({ email: email, password: password });
+    state.authLoading = false;
+    if (result.error){
+      state.authError = translateAuthError(result.error.message);
+      render();
+      return;
+    }
+    if (result.data.session){
+      state.session = result.data.session;
+      await loadUserData();
+    } else {
+      state.authMode = 'login';
+      state.authError = '';
+      render();
+      showToast('注册成功，请查收邮箱完成验证后登录');
+    }
+  }
+
+  async function handleLogout(){
+    await supabaseClient.auth.signOut();
+    state.session = null;
+    state.books = [];
+    state.chapters = [];
+    state.checkins = [];
+    state.view = 'library';
+    state.selectedBookId = null;
+    render();
   }
 
   function getChaptersForBook(bookId){
@@ -1054,164 +1131,6 @@
         return ao - bo;
       });
   }
-
-  function getReadingActivity(){
-    // 统计最近8周每天的阅读活动（打卡 + 添加/编辑笔记）
-    var activity = {};
-    var today = new Date();
-    var eightWeeksAgo = new Date(today);
-    eightWeeksAgo.setDate(today.getDate() - 56); // 8周前
-
-    // 加入打卡记录
-    state.checkinDates.forEach(function(dateStr){
-      if (activity[dateStr]){
-        activity[dateStr] += 2; // 打卡权重更高
-      } else {
-        activity[dateStr] = 2;
-      }
-    });
-
-    // 加入笔记活动
-    state.chapters.forEach(function(ch){
-      var date = new Date(ch.createdAt || ch.updatedAt || 0);
-      if (date >= eightWeeksAgo && date <= today){
-        var key = date.toISOString().split('T')[0];
-        activity[key] = (activity[key] || 0) + 1;
-      }
-    });
-
-    // 也统计读书状态变化
-    state.books.forEach(function(book){
-      if (book.updatedAt){
-        var date = new Date(book.updatedAt);
-        if (date >= eightWeeksAgo && date <= today){
-          var key = date.toISOString().split('T')[0];
-          activity[key] = (activity[key] || 0) + 0.5;
-        }
-      }
-    });
-
-    return activity;
-  }
-
-  function getHeatmapLevel(count){
-    if (!count || count === 0) return 0;
-    if (count >= 3) return 4;
-    if (count >= 2) return 3;
-    if (count >= 1.5) return 2;
-    return 1;
-  }
-
-  function getCurrentStreak(){
-    var stored = localStorage.getItem(STORAGE_KEY);
-    var parsed = stored ? JSON.parse(stored) : {};
-    var checkinDates = parsed.checkinDates || [];
-
-    var streak = 0;
-    var today = new Date();
-    var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-
-    for (var i = 0; i < 365; i++){
-      var d = new Date(today);
-      d.setDate(today.getDate() - i);
-      var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-      if (checkinDates.indexOf(key) !== -1){
-        streak++;
-      } else if (i > 0) {
-        break;
-      }
-    }
-    return streak;
-  }
-
-  function doCheckin(){
-    var d = new Date();
-    var today = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    if (state.checkinDates.indexOf(today) === -1){
-      state.checkinDates.push(today);
-      persist();
-      showToast('打卡成功！今日已读');
-      render();
-    }
-  }
-
-  function isCheckedInToday(){
-    var d = new Date();
-    var today = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    return state.checkinDates.indexOf(today) !== -1;
-  }
-
-  function renderCheckin(){
-    var checked = isCheckedInToday();
-    var streak = getCurrentStreak();
-    return ''
-    + '<div class="checkin-bar">'
-    +   '<span class="checkin-streak">连续打卡 <strong>' + streak + '</strong> 天</span>'
-    +   '<button class="checkin-btn' + (checked ? ' checked' : '') + '" data-action="do-checkin"' + (checked ? ' disabled' : '') + '>'
-    +     '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
-    +     (checked ? '已完成' : '打卡')
-    +   '</button>'
-    + '</div>';
-  }
-
-  function renderHeatmap(){
-    var streak = getCurrentStreak();
-    var collapsed = state.heatmapCollapsed ? 'collapsed' : '';
-
-    // 获取本周（周一到周日）的数据
-    var days = ['一','二','三','四','五','六','日'];
-    var today = new Date();
-    var todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    // 找到本周周一
-    var dayOfWeek = today.getDay(); // 0=周日, 1=周一...
-    var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    var monday = new Date(todayDate);
-    monday.setDate(todayDate.getDate() + mondayOffset);
-
-    var weekData = [];
-
-    var stored = localStorage.getItem(STORAGE_KEY);
-    var parsed = stored ? JSON.parse(stored) : {};
-    var checkinDates = parsed.checkinDates || [];
-
-    for (var i = 0; i < 7; i++){
-      var d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-      var hasActivity = checkinDates.indexOf(key) !== -1;
-      var isToday = key === (today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0'));
-      weekData.push({
-        day: days[i],
-        date: String(d.getDate()),
-        has: hasActivity,
-        today: isToday
-      });
-    }
-
-    var html = ''
-    + '<div class="heatmap-section">'
-    +   '<div class="section-label section-toggle ' + collapsed + '" data-action="toggle-heatmap">'
-    +     '<h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>本周阅读</h3>'
-    +     '<svg class="arrow icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>'
-    +   '</div>'
-    +   '<div class="heatmap-bar">';
-    weekData.forEach(function(w){
-      html += '<div class="heatmap-bar-day' + (w.has ? ' has' : '') + (w.today ? ' today' : '') + '"></div>';
-    });
-    html += '</div>'
-    +   '<div class="heatmap-bar-labels">';
-    weekData.forEach(function(w){
-      html += '<span' + (w.today ? ' style="font-weight:600;color:var(--navy)"' : '') + '>' + w.date + '日(' + w.day + ')</span>';
-    });
-    html += '</div>'
-    +   '<div class="heatmap-legend">'
-    +     '<span class="' + (weekData[6].has ? 'active' : '') + '"></span> 有阅读'
-    +   '</div>'
-    + '</div>';
-    return html;
-  }
-
-  // initHeatmap 不再需要，简化版直接渲染
 
   /* ---------- actions ---------- */
 
@@ -1333,6 +1252,62 @@
     showToast('已删除该章节');
   }
 
+  /* ---------- check-in ---------- */
+
+  function todayStr(){
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function dateStrOffset(offsetDays){
+    var d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function isCheckedIn(dateStr){
+    return state.checkins.indexOf(dateStr) !== -1;
+  }
+
+  function toggleTodayCheckin(){
+    var today = todayStr();
+    if (isCheckedIn(today)) return; // already checked in, no toggling off
+    state.checkins.push(today);
+    persist();
+    render();
+    showToast('打卡成功，继续加油！');
+  }
+
+  function getCurrentStreak(){
+    var streak = 0;
+    var offset = 0;
+    // if today not checked in yet, start counting from yesterday
+    if (!isCheckedIn(todayStr())){
+      offset = -1;
+    }
+    while (isCheckedIn(dateStrOffset(offset))){
+      streak++;
+      offset--;
+    }
+    return streak;
+  }
+
+  function getCheckinCalendarDays(numDays){
+    var days = [];
+    for (var i = numDays - 1; i >= 0; i--){
+      var ds = dateStrOffset(-i);
+      days.push({ date: ds, filled: isCheckedIn(ds), isToday: (i === 0) });
+    }
+    return days;
+  }
+
+
   /* ---------- rendering ---------- */
 
   function render(){
@@ -1341,29 +1316,59 @@
       app.innerHTML = '<div class="loading-state">正在打开书架…</div>';
       return;
     }
+    if (!state.session){
+      app.innerHTML = renderAuthScreen();
+      bindEvents();
+      return;
+    }
     if (state.view === 'book' && state.selectedBookId){
       app.innerHTML = renderHeader() + renderBookDetail();
+    } else if (state.view === 'checkin'){
+      app.innerHTML = renderHeader() + renderCheckinDetail();
     } else {
       app.innerHTML = renderHeader() + renderLibrary();
     }
     bindEvents();
   }
 
-  function renderHeader(){
-    var headerBtns = '';
-    if (state.view === 'library'){
-      headerBtns = '<button class="btn btn-ghost" data-action="export-all" title="导出全部笔记"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>导出</button>'
-        + '<button class="btn btn-ghost" data-action="import-backup" title="从备份恢复"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>导入</button>'
-        + '<input type="file" id="importFileInput" accept=".json" style="display:none" data-action="import-file">'
-        + '<button class="btn btn-primary" data-action="open-add-book"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>添加书本</button>';
-    }
+  function renderAuthScreen(){
+    var mode = state.authMode;
     return ''
-    + '<div class="app-header">'
+    + '<div class="auth-wrap">'
     +   '<div class="brand">'
     +     '<div class="brand-mark"></div>'
     +     '<div><h1 class="serif">书斋</h1><p>记录读过的每一本书，梳理每一章的收获</p></div>'
     +   '</div>'
-    +   '<div class="header-actions">' + headerBtns + '</div>'
+    +   '<div class="panel">'
+    +     '<div class="auth-tabs">'
+    +       '<button class="auth-tab ' + (mode==='login'?'active':'') + '" data-action="switch-auth-mode" data-mode="login">登录</button>'
+    +       '<button class="auth-tab ' + (mode==='register'?'active':'') + '" data-action="switch-auth-mode" data-mode="register">注册</button>'
+    +     '</div>'
+    + (state.authError ? '<div class="auth-error">' + escapeHtml(state.authError) + '</div>' : '')
+    +     '<div class="field"><label>邮箱</label><input type="email" id="auth-email" placeholder="you@example.com" value="' + escapeHtml(state.authEmail) + '" autofocus></div>'
+    +     '<div class="field"><label>密码</label><input type="password" id="auth-password" placeholder="至少 6 位" value=""></div>'
+    +     '<button class="btn btn-primary btn-full" data-action="' + (mode==='login'?'submit-login':'submit-register') + '"' + (state.authLoading ? ' disabled' : '') + '>'
+    +       (state.authLoading ? '请稍候…' : (mode==='login' ? '登录' : '注册'))
+    +     '</button>'
+    +   '</div>'
+    +   '<p class="auth-hint">' + (mode==='login' ? '还没有账号？点上方"注册"创建一个。' : '数据只有你登录后能看到，请牢记密码。') + '</p>'
+    + '</div>';
+  }
+
+  function renderHeader(){
+    var userEmail = (state.session && state.session.user) ? state.session.user.email : '';
+    return ''
+    + '<div class="app-header">'
+    +   '<div class="brand">'
+    +     '<div class="brand-mark"></div>'
+    +     '<h1 class="serif">书斋</h1>'
+    +   '</div>'
+    +   '<div class="header-actions">'
+    +     '<span class="user-email-btn" data-action="toggle-user-menu">' + escapeHtml(userEmail) + '</span>'
+    +     '<div class="user-dropdown" id="user-dropdown" style="display:none;">'
+    +       '<button class="btn btn-ghost btn-sm" data-action="logout">退出登录</button>'
+    +     '</div>'
+    +   '</div>'
     + '</div>'
     + (state.view === 'library' && state.books.length > 0
       ? '<div class="search-box">'
@@ -1372,121 +1377,6 @@
         + (state.searchQuery ? '<button class="search-clear" data-action="clear-search" aria-label="清除搜索"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' : '')
         + '</div>'
       : '');
-  }
-
-  function getStats(){
-    var done = state.books.filter(function(b){ return b.status === 'done'; }).length;
-    var reading = state.books.filter(function(b){ return b.status === 'reading'; }).length;
-    var notes = state.chapters.filter(function(c){ return c.content && c.content.trim(); }).length;
-    var quotes = state.chapters.filter(function(c){ return c.quote && c.quote.trim(); }).length;
-    return { done: done, reading: reading, notes: notes, quotes: quotes };
-  }
-
-  function getRandomChapter(){
-    var chaptersWithContent = state.chapters.filter(function(c){ return c.content && c.content.trim(); });
-    if (chaptersWithContent.length === 0) return null;
-    var randomIdx = Math.floor(Math.random() * chaptersWithContent.length);
-    return chaptersWithContent[randomIdx];
-  }
-
-  function getQuoteWall(){
-    var quotes = [];
-    state.chapters.forEach(function(ch){
-      if (ch.quote && ch.quote.trim()){
-        var book = state.books.find(function(b){ return b.id === ch.bookId; });
-        quotes.push({
-          text: ch.quote,
-          bookTitle: book ? book.title : '',
-          chapterTitle: ch.title
-        });
-      }
-    });
-    return quotes;
-  }
-
-  function renderStats(){
-    var stats = getStats();
-    var collapsed = state.statsCollapsed ? 'collapsed' : '';
-    return ''
-    + '<div class="stats-bar">'
-    +   '<div class="stat-item">'
-    +     '<div class="stat-num">' + stats.done + '</div>'
-    +     '<div class="stat-label">读完</div>'
-    +   '</div>'
-    +   '<div class="stat-item">'
-    +     '<div class="stat-num">' + stats.reading + '</div>'
-    +     '<div class="stat-label">在读</div>'
-    +   '</div>'
-    +   '<div class="stat-item">'
-    +     '<div class="stat-num">' + stats.notes + '</div>'
-    +     '<div class="stat-label">笔记</div>'
-    +   '</div>'
-    +   '<div class="stat-item highlight">'
-    +     '<div class="stat-num">' + stats.quotes + '</div>'
-    +     '<div class="stat-label">金句</div>'
-    +   '</div>'
-    + '</div>';
-  }
-
-  function renderQuoteWall(){
-    var quotes = getQuoteWall();
-    var collapsed = state.quoteWallCollapsed ? 'collapsed' : '';
-    var html = ''
-    + '<div class="quote-wall">'
-    +   '<div class="section-label section-toggle ' + collapsed + '" data-action="toggle-quote-wall">'
-    +     '<h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>金句收集</h3>'
-    +     '<svg class="arrow icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>'
-    +   '</div>';
-
-    if (quotes.length === 0){
-      html += '<div class="quote-empty">还没有金句，读书时摘录触动你的句子吧</div>';
-    } else {
-      html += '<div class="quote-wall-grid">';
-      quotes.forEach(function(q){
-        html += '<div class="quote-card">'
-          + '<p>"' + escapeHtml(q.text) + '"</p>'
-          + '<div class="quote-from">——《' + escapeHtml(q.bookTitle) + '》' + escapeHtml(q.chapterTitle) + '</div>'
-          + '</div>';
-      });
-      html += '</div>';
-    }
-    html += '</div>';
-    return html;
-  }
-
-  function renderRandomReview(){
-    var ch = state.reviewChapterId
-      ? state.chapters.find(function(c){ return c.id === state.reviewChapterId; })
-      : null;
-    if (!ch) ch = getRandomChapter();
-    if (!ch) state.reviewChapterId = null;
-
-    var book = ch ? state.books.find(function(b){ return b.id === ch.bookId; }) : null;
-    var collapsed = state.reviewCollapsed ? 'collapsed' : '';
-
-    var html = ''
-    + '<div class="quote-wall">'
-    +   '<div class="section-label section-toggle ' + collapsed + '" data-action="toggle-review">'
-    +     '<h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>温故知新</h3>'
-    +     '<svg class="arrow icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>'
-    +   '</div>';
-
-    if (!ch){
-      html += '<div class="quote-empty">还没有笔记可以回顾，先写几篇笔记吧</div>';
-    } else {
-      html += '<div class="review-card">'
-        + '<div class="review-header">'
-        +   '<div>'
-        +     '<h4>' + escapeHtml(ch.title) + '</h4>'
-        +     '<p class="review-book">' + (book ? escapeHtml(book.title) : '') + '</p>'
-        +   '</div>'
-        +   '<button class="review-refresh" data-action="refresh-review">换一篇</button>'
-        + '</div>'
-        + '<p class="review-content">' + escapeHtml(ch.content || '暂无内容') + '</p>'
-        + '</div>';
-    }
-    html += '</div>';
-    return html;
   }
 
   function renderLibrary(){
@@ -1503,35 +1393,31 @@
       + '<div class="empty">'
       +   '<h2 class="serif">书架空空如也</h2>'
       +   '<p>添加第一本正在读的书，开始记录你的阅读笔记。</p>'
-      +   '<button class="btn btn-primary" data-action="open-add-book"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>添加书本</button>'
+      +   '<button class="btn btn-primary btn-sm" data-action="open-add-book"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>添加书本</button>'
       + '</div>';
       return html;
     }
     if (state.books.length > 0){
-      // 阅读统计
-      html += renderStats();
-
-      // 每日打卡
-      html += renderCheckin();
-
-      // 阅读热力图
-      html += renderHeatmap();
-
       var counts = { all: state.books.length, want: 0, reading: 0, done: 0 };
       state.books.forEach(function(b){ counts[b.status || 'want']++; });
 
-      html += '<div class="filter-tabs">'
+      // 第一行：座右铭
+      html += '<div class="motto-row">' + getMottoDisplay() + '</div>';
+
+      // 第二行：筛选标签 + 添加书本
+      html += '<div class="shelf-actions">'
+        + '<div class="filter-tabs">'
         + renderFilterTab('all', '全部', counts.all)
         + renderFilterTab('want', '想读', counts.want)
         + renderFilterTab('reading', '在读', counts.reading)
         + renderFilterTab('done', '读完', counts.done)
+        + '</div>'
+        + '<button class="btn btn-primary btn-sm" data-action="open-add-book"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>添加书本</button>'
         + '</div>';
 
       var visibleBooks = state.books.filter(function(b){
         return state.libraryFilter === 'all' || (b.status || 'want') === state.libraryFilter;
       });
-
-      html += '<div class="shelf-label"><span>共 ' + visibleBooks.length + ' 本</span></div>';
 
       if (visibleBooks.length === 0){
         html += '<div class="empty" style="padding:48px 20px;"><p style="margin:0;">这个分类下暂时没有书。</p></div>';
@@ -1558,14 +1444,83 @@
         + '</div>';
       });
       html += '</div>';
-
-      // 金句墙
-      html += renderQuoteWall();
-
-      // 随机回顾
-      html += renderRandomReview();
     }
     return html;
+  }
+
+  function renderDashboard(){
+    var counts = { all: state.books.length, want: 0, reading: 0, done: 0 };
+    state.books.forEach(function(b){ counts[b.status || 'want']++; });
+
+    var streak = getCurrentStreak();
+    var checkedToday = isCheckedIn(todayStr());
+
+    return ''
+    + '<div class="dashboard">'
+    +   '<div class="stats-row">'
+    +     '<span class="total-books">📚 ' + counts.all + ' 本</span>'
+    +     '<div class="checkin-line">'
+    +       '<span class="streak-text" data-action="open-checkin-detail">连续打卡 ' + streak + ' 天</span>'
+    +       '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
+    +         (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
+    +       '</button>'
+    +     '</div>'
+    +   '</div>'
+    + '</div>';
+  }
+
+  function renderCheckinDetail(){
+    var streak = getCurrentStreak();
+    var totalCheckins = state.checkins.length;
+
+    // 生成当月日历
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var monthName = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
+
+    var calendarHtml = '<div class="checkin-calendar">';
+    // 星期标签
+    ['日','一','二','三','四','五','六'].forEach(function(d){
+      calendarHtml += '<div class="weekday-label">' + d + '</div>';
+    });
+    // 空白格子
+    for (var i = 0; i < firstDay; i++){
+      calendarHtml += '<div class="checkin-day empty"></div>';
+    }
+    // 日期格子
+    for (var d = 1; d <= daysInMonth; d++){
+      var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      var filled = isCheckedIn(dateStr);
+      var isToday = (d === now.getDate());
+      var cls = 'checkin-day' + (filled ? ' filled' : '') + (isToday && !filled ? ' today' : '');
+      calendarHtml += '<div class="' + cls + '">' + d + '</div>';
+    }
+    calendarHtml += '</div>';
+
+    return ''
+    + '<div class="checkin-detail-header">'
+    +   '<button class="back-link" data-action="back-to-library">'
+    +     '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
+    +     '返回书架'
+    +   '</button>'
+    + '</div>'
+    + '<div class="checkin-stats-grid">'
+    +   '<div class="checkin-stat-card">'
+    +     '<p class="stat-label">连续打卡</p>'
+    +     '<p class="stat-value">' + streak + '<span class="stat-unit">天</span></p>'
+    +   '</div>'
+    +   '<div class="checkin-stat-card">'
+    +     '<p class="stat-label">累计打卡</p>'
+    +     '<p class="stat-value">' + totalCheckins + '<span class="stat-unit">天</span></p>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="checkin-calendar-section">'
+    +   '<h3>' + monthName + '</h3>'
+    +   calendarHtml
+    + '</div>';
   }
 
   function renderFilterTab(key, label, count){
@@ -1697,7 +1652,7 @@
       : '')
     +     '</div>'
     +     '<div class="detail-actions">'
-    +       '<button class="btn btn-sm" data-action="export-book" data-id="' + book.id + '"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>导出</button>'
+    +       '<button class="btn btn-sm" data-action="export-book" data-id="' + book.id + '"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>导出本书</button>'
     +       '<button class="btn btn-sm ' + (isDeletingBook ? 'confirm-btn' : '') + '" data-action="delete-book" data-id="' + book.id + '">'
     +         (isDeletingBook ? '确认删除整本书？' : '删除书本') + '</button>'
     +     '</div>'
@@ -1745,10 +1700,10 @@
           + '<button class="btn btn-sm ' + (isDeletingCh ? 'confirm-btn' : '') + '" data-action="delete-chapter" data-id="' + ch.id + '">' + (isDeletingCh ? '确认删除？' : '删除') + '</button>'
           + '</div>';
         }
-        html += '</div>';
-        html += '</div>';
+        html += '</div>'; // chapter-body
+        html += '</div>'; // chapter-row
       });
-      html += '</div>';
+      html += '</div>'; // chapter-list
 
       if (state.showAddChapter){
         html += renderAddChapterForm();
@@ -1785,6 +1740,15 @@
       var id = target.getAttribute('data-id');
 
       switch(action){
+        case 'edit-motto':
+          var currentMotto = getMotto();
+          var newMotto = prompt('输入你的座右铭（限20字以内）：', currentMotto);
+          if (newMotto !== null){
+            newMotto = newMotto.trim().slice(0, 20);
+            setMotto(newMotto);
+            render();
+          }
+          break;
         case 'open-add-book':
           state.showAddBook = true;
           state.draftBookTitle = '';
@@ -1898,38 +1862,53 @@
         case 'export-book':
           exportMarkdown(id);
           break;
-        case 'import-backup':
-          document.getElementById('importFileInput').click();
-          break;
-        case 'import-file':
-          var fileInput = document.getElementById('importFileInput');
-          if (fileInput && fileInput.files && fileInput.files[0]){
-            importBackup(fileInput.files[0]);
-          }
-          break;
-        case 'toggle-quote-wall':
-          state.quoteWallCollapsed = !state.quoteWallCollapsed;
+        case 'switch-auth-mode':
+          state.authMode = target.getAttribute('data-mode');
+          state.authError = '';
           render();
+          setTimeout(function(){ var el = document.getElementById('auth-email'); if (el) el.focus(); }, 0);
           break;
-        case 'toggle-review':
-          state.reviewCollapsed = !state.reviewCollapsed;
+        case 'open-checkin-detail':
+          state.view = 'checkin';
           render();
+          window.scrollTo(0,0);
           break;
-        case 'refresh-review':
-          state.reviewChapterId = null;
-          render();
+        case 'checkin-today':
+          toggleTodayCheckin();
           break;
-        case 'toggle-heatmap':
-          state.heatmapCollapsed = !state.heatmapCollapsed;
-          render();
+        case 'submit-login':
+          handleLogin();
           break;
-        case 'do-checkin':
-          if (!isCheckedInToday()){
-            doCheckin();
-          }
+        case 'submit-register':
+          handleRegister();
+          break;
+        case 'toggle-user-menu':
+          var dropdown = document.getElementById('user-dropdown');
+          if (dropdown) dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+          break;
+        case 'logout':
+          handleLogout();
           break;
       }
     };
+
+    // 点击其他地方关闭下拉菜单
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('.header-actions')){
+        var dropdown = document.getElementById('user-dropdown');
+        if (dropdown) dropdown.style.display = 'none';
+      }
+    });
+
+    // Enter-to-submit on auth password field
+    var authPassword = document.getElementById('auth-password');
+    if (authPassword){
+      authPassword.addEventListener('keydown', function(e){
+        if (e.key === 'Enter'){
+          if (state.authMode === 'login') handleLogin(); else handleRegister();
+        }
+      });
+    }
 
     // Enter-to-submit on single-line title inputs
     var newBookTitle = document.getElementById('new-book-title');
@@ -1941,7 +1920,7 @@
       newChapterTitle.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); document.getElementById('new-chapter-content').focus(); } });
     }
 
-    // reading-progress slider
+    // reading-progress slider: live label update + persist on release
     var slider = document.getElementById('progress-slider');
     if (slider){
       slider.addEventListener('input', function(){
@@ -1953,7 +1932,8 @@
       });
     }
 
-    // search input
+    // search input: re-render results while preserving cursor/focus
+    // (ignore input events fired during IME composition so Chinese/Japanese/Korean typing isn't interrupted)
     var searchInput = document.getElementById('search-input');
     if (searchInput){
       var isComposing = false;
@@ -2076,54 +2056,6 @@
     }
   }
 
-  function exportBackup(){
-    if (state.books.length === 0 && state.chapters.length === 0){
-      showToast('还没有数据');
-      return;
-    }
-    var data = {
-      books: state.books,
-      chapters: state.chapters,
-      exportTime: new Date().toISOString()
-    };
-    try{
-      var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = '书斋备份_' + new Date().toLocaleDateString('zh-CN').replace(/\//g, '-') + '.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-      showToast('备份已导出');
-    }catch(e){
-      showToast('导出失败');
-    }
-  }
-
-  function importBackup(file){
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e){
-      try{
-        var data = JSON.parse(e.target.result);
-        if (data.books && Array.isArray(data.books)){
-          state.books = data.books;
-          state.chapters = data.chapters || [];
-          persist();
-          render();
-          showToast('已恢复 ' + state.books.length + ' 本书');
-        } else {
-          showToast('文件格式不正确');
-        }
-      }catch(err){
-        showToast('导入失败');
-      }
-    };
-    reader.readAsText(file);
-  }
-
   function syncDraftBookFromDom(){
     var titleEl = document.getElementById('new-book-title');
     var authorEl = document.getElementById('new-book-author');
@@ -2172,122 +2104,7 @@
     updateChapter(chapterId, title, quoteEl ? quoteEl.value : '', contentEl ? contentEl.value : '');
   }
 
-  /* ---------- login ---------- */
-
-  function initLogin(){
-    var savedPassword = localStorage.getItem(PASSWORD_KEY);
-
-    if (!savedPassword){
-      document.getElementById('loginDesc').textContent = '设置登录密码，保护你的书架';
-      document.getElementById('passwordInput').placeholder = '设置登录密码';
-      document.getElementById('loginHint').textContent = '首次使用将自动设置为登录密码';
-    } else {
-      document.getElementById('loginDesc').textContent = '输入密码解锁你的书架';
-      document.getElementById('passwordInput').placeholder = '请输入密码';
-      document.getElementById('loginHint').textContent = '';
-    }
-
-    document.getElementById('unlockBtn').onclick = function(){
-      var password = document.getElementById('passwordInput').value;
-      if (!password){
-        document.getElementById('loginError').style.display = 'block';
-        document.getElementById('loginError').textContent = '请输入密码';
-        return;
-      }
-
-      if (!savedPassword){
-        localStorage.setItem(PASSWORD_KEY, password);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        loadData();
-        return;
-      }
-
-      if (password === savedPassword){
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        loadData();
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-        document.getElementById('loginError').textContent = '密码错误，请重试';
-      }
-    };
-
-    document.getElementById('passwordInput').onkeydown = function(e){
-      if (e.key === 'Enter') document.getElementById('unlockBtn').click();
-    };
-
-    // 忘记密码
-    document.getElementById('forgotPwdBtn').onclick = function(e){
-      e.preventDefault();
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('resetPwdScreen').style.display = 'flex';
-      document.getElementById('newPwdInput').value = '';
-      document.getElementById('confirmPwdInput').value = '';
-      document.getElementById('resetPwdError').style.display = 'none';
-      document.getElementById('newPwdInput').focus();
-    };
-
-    // 取消重置
-    document.getElementById('cancelResetBtn').onclick = function(){
-      document.getElementById('resetPwdScreen').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('passwordInput').value = '';
-      document.getElementById('passwordInput').focus();
-    };
-
-    // 确认重置
-    document.getElementById('resetPwdBtn').onclick = function(){
-      var newPwd = document.getElementById('newPwdInput').value;
-      var confirmPwd = document.getElementById('confirmPwdInput').value;
-      var errorEl = document.getElementById('resetPwdError');
-
-      if (!newPwd){
-        errorEl.style.display = 'block';
-        errorEl.textContent = '请输入新密码';
-        return;
-      }
-      if (newPwd.length < 4){
-        errorEl.style.display = 'block';
-        errorEl.textContent = '密码至少4个字符';
-        return;
-      }
-      if (newPwd !== confirmPwd){
-        errorEl.style.display = 'block';
-        errorEl.textContent = '两次密码不一致';
-        return;
-      }
-
-      // 清空所有数据
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(PASSWORD_KEY);
-
-      // 设置新密码
-      localStorage.setItem(PASSWORD_KEY, newPwd);
-
-      // 回到登录界面
-      document.getElementById('resetPwdScreen').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('passwordInput').value = '';
-      document.getElementById('loginDesc').textContent = '密码已重置，请重新登录';
-      document.getElementById('passwordInput').placeholder = '请输入密码';
-      document.getElementById('loginHint').textContent = '';
-    };
-
-    // 回车提交重置表单
-    document.getElementById('confirmPwdInput').onkeydown = function(e){
-      if (e.key === 'Enter') document.getElementById('resetPwdBtn').click();
-    };
-  }
-
-  /* ---------- 启动 ---------- */
-  function initLogin(){
-    // 跳过登录，直接加载数据
-    document.getElementById('app').style.display = 'block';
-    loadData();
-  }
-
-  initLogin();
+  loadData();
 })();
 </script>
 </body>
