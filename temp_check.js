@@ -504,24 +504,26 @@
       var counts = { all: state.books.length, want: 0, reading: 0, done: 0 };
       state.books.forEach(function(b){ counts[b.status || 'want']++; });
 
-      // 第一行：座右铭
-      html += '<div class="motto-row">' + getMottoDisplay() + '</div>';
-
-      // 第二行：筛选标签 + 打卡 + 添加书本
+      // 第一行：座右铭 + 打卡
       var streak = getCurrentStreak();
       var checkedToday = isCheckedIn(todayStr());
+      html += '<div class="motto-row">'
+        + '<span class="motto-left">' + getMottoDisplay() + '</span>'
+        + '<div class="checkin-mini">'
+        +   '<span class="streak-text" data-action="open-checkin-detail">' + streak + ' 天</span>'
+        +   '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
+        +     (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
+        +   '</button>'
+        + '</div>'
+        + '</div>';
+
+      // 第二行：筛选标签 + 添加书本
       html += '<div class="shelf-actions">'
         + '<div class="filter-tabs">'
         + renderFilterTab('all', '全部', counts.all)
         + renderFilterTab('want', '想读', counts.want)
         + renderFilterTab('reading', '在读', counts.reading)
         + renderFilterTab('done', '读完', counts.done)
-        + '</div>'
-        + '<div class="checkin-mini">'
-        +   '<span class="streak-text" data-action="open-checkin-detail">' + streak + ' 天</span>'
-        +   '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
-        +     (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
-        +   '</button>'
         + '</div>'
         + '<button class="btn btn-primary btn-sm" data-action="open-add-book"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>'
         + '</div>';
@@ -615,18 +617,13 @@
     + '<div class="checkin-detail-header">'
     +   '<button class="back-link" data-action="back-to-library">'
     +     '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
-    +     '返回书架'
+    +     '返回'
     +   '</button>'
     + '</div>'
-    + '<div class="checkin-stats-grid">'
-    +   '<div class="checkin-stat-card">'
-    +     '<p class="stat-label">连续打卡</p>'
-    +     '<p class="stat-value">' + streak + '<span class="stat-unit">天</span></p>'
-    +   '</div>'
-    +   '<div class="checkin-stat-card">'
-    +     '<p class="stat-label">累计打卡</p>'
-    +     '<p class="stat-value">' + totalCheckins + '<span class="stat-unit">天</span></p>'
-    +   '</div>'
+    + '<div class="checkin-simple">'
+    +   '<span class="checkin-stat">连续 <strong>' + streak + '</strong> 天</span>'
+    +   '<span class="checkin-divider">|</span>'
+    +   '<span class="checkin-stat">累计 <strong>' + totalCheckins + '</strong> 天</span>'
     + '</div>'
     + '<div class="checkin-calendar-section">'
     +   '<h3>' + monthName + '</h3>'

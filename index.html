@@ -806,22 +806,36 @@
 
   /* checkin detail page */
   .checkin-detail-header{
-    margin-bottom:24px;
+    margin-bottom:16px;
   }
   .back-link{
     display:inline-flex;
     align-items:center;
-    gap:6px;
-    font-size:13px;
-    color:var(--ink-soft);
+    gap:4px;
+    font-size:12px;
+    color:var(--ink-faint);
     background:none;
     border:none;
     cursor:pointer;
-    padding:6px 0;
-    margin-bottom:16px;
+    padding:4px 0;
     font-family:inherit;
   }
   .back-link:hover{ color:var(--ink); }
+  .checkin-simple{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .checkin-simple .checkin-stat strong{
+    font-weight:600;
+    color:var(--ink);
+  }
+  .checkin-divider{
+    color:var(--line);
+  }
   .checkin-stats-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
@@ -1536,18 +1550,13 @@
     + '<div class="checkin-detail-header">'
     +   '<button class="back-link" data-action="back-to-library">'
     +     '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
-    +     '返回书架'
+    +     '返回'
     +   '</button>'
     + '</div>'
-    + '<div class="checkin-stats-grid">'
-    +   '<div class="checkin-stat-card">'
-    +     '<p class="stat-label">连续打卡</p>'
-    +     '<p class="stat-value">' + streak + '<span class="stat-unit">天</span></p>'
-    +   '</div>'
-    +   '<div class="checkin-stat-card">'
-    +     '<p class="stat-label">累计打卡</p>'
-    +     '<p class="stat-value">' + totalCheckins + '<span class="stat-unit">天</span></p>'
-    +   '</div>'
+    + '<div class="checkin-simple">'
+    +   '<span class="checkin-stat">连续 <strong>' + streak + '</strong> 天</span>'
+    +   '<span class="checkin-divider">|</span>'
+    +   '<span class="checkin-stat">累计 <strong>' + totalCheckins + '</strong> 天</span>'
     + '</div>'
     + '<div class="checkin-calendar-section">'
     +   '<h3>' + monthName + '</h3>'
