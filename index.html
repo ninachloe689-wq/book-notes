@@ -868,35 +868,41 @@
   }
   .checkin-calendar-section h3{
     font-size:13px;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-    color:var(--ink-faint);
+    color:var(--ink);
     font-weight:600;
-    margin:0 0 14px;
+    margin:0 0 12px;
   }
   .checkin-calendar{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
-    gap:4px;
+    gap:3px;
+    width:100%;
+    max-width:280px;
   }
   .checkin-calendar .weekday-label{
-    font-size:11px;
+    font-size:10px;
     color:var(--ink-faint);
     text-align:center;
     margin-bottom:4px;
+    height:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
   .checkin-day{
     aspect-ratio:1;
-    border-radius:4px;
+    border-radius:2px;
     background:var(--line-soft);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:12px;
+    font-size:11px;
+    font-weight:500;
     color:var(--ink-faint);
+    min-width:0;
+    cursor:default;
   }
-  .checkin-day.filled{ background:var(--moss); color:#fff; }
-  .checkin-day.today{ border:1.5px solid var(--ink-faint); box-sizing:border-box; }
+  .checkin-day.today{ box-shadow: inset 0 0 0 1.5px var(--ink-faint); background:var(--line-soft); color:var(--ink); }
   .checkin-day.empty{ background:transparent; }
 
   .section-label{
@@ -916,11 +922,112 @@
 
   /* book detail */
   .detail-header{ margin-bottom:24px; }
+
+  /* mood picker */
+  .mood-overlay{
+    position:fixed; inset:0;
+    background:rgba(34,37,43,0.45);
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .mood-panel{
+    background:var(--surface);
+    border-radius:var(--radius-l);
+    padding:24px 28px 20px;
+    width:300px;
+    box-shadow:0 8px 32px rgba(34,37,43,0.18);
+  }
+  .mood-title{
+    text-align:center;
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:18px;
+  }
+  .mood-options{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .mood-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    padding:12px 6px;
+    border-radius:var(--radius-m);
+    border:1.5px solid var(--line);
+    background:var(--surface);
+    cursor:pointer;
+    transition:border-color .15s, background .15s, transform .1s;
+    font-family:inherit;
+  }
+  .mood-btn:hover{ border-color:var(--navy); background:var(--navy-soft); transform:scale(1.05); }
+  .mood-dot{ width:28px; height:28px; border-radius:50%; flex:none; }
+  .mood-label{ font-size:12px; color:var(--ink-soft); font-weight:500; }
+  .mood-cancel{
+    width:100%;
+    padding:9px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-s);
+    background:transparent;
+    color:var(--ink-soft);
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .mood-cancel:hover{ background:var(--line-soft); }
+
+  /* checkin legend */
+  .checkin-legend{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+  .checkin-legend span{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-size:11px;
+    color:var(--ink-faint);
+  }
+  .legend-dot{ width:12px; height:12px; border-radius:2px; flex:none; }
+
+  /* checkin stats */
+  .checkin-stats{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-m);
+    padding:14px 16px;
+    margin-top:14px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .stats-item{ text-align:center; min-width:48px; }
+  .stats-num{ font-size:16px; font-weight:600; color:var(--ink); font-family:'Source Serif 4','Noto Serif SC',serif; line-height:1; }
+  .stats-label{ font-size:10px; color:var(--ink-faint); margin-top:2px; }
+  .stats-bar-wrap{ flex:1; min-width:140px; }
+  .stats-bar-row{ display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+  .stats-bar-row:last-child{ margin-bottom:0; }
+  .stats-bar-label{ font-size:10px; color:var(--ink-faint); width:32px; flex:none; text-align:right; }
+  .stats-bar-track{ flex:1; height:5px; background:var(--line-soft); border-radius:3px; overflow:hidden; }
+  .stats-bar-fill{ height:100%; border-radius:3px; }
+  .stats-bar-count{ font-size:10px; color:var(--ink-faint); width:16px; text-align:right; flex:none; }
   }
   @media (max-width:640px){
     .stats-row{ flex-direction:column; align-items:flex-start; }
     .stats-row .checkin-line{ margin-left:0; }
     .checkin-btn{ width:100%; justify-content:center; }
+    .checkin-stats{ flex-direction:column; align-items:flex-start; }
+    .stats-bar-wrap{ width:100%; }
   }
 </style>
 </head>
@@ -940,7 +1047,7 @@
   var state = {
     books: [],
     chapters: [],
-    checkins: [],          // array of 'YYYY-MM-DD' strings, unique
+    checkins: [],          // array of { date: 'YYYY-MM-DD', mood: 'great'|'good'|'okay'|'bad' }
     view: 'library',        // 'library' | 'book' | 'checkin'
     selectedBookId: null,
     showAddBook: false,
@@ -959,7 +1066,15 @@
     authMode: 'login',      // 'login' | 'register'
     authEmail: '',
     authError: '',
-    authLoading: false
+    authLoading: false,
+    showMoodPicker: false   // show mood picker modal
+  };
+
+  var MOODS = {
+    great: { label: '很棒', bg: '#5A9A6E', color: '#fff' },
+    good:  { label: '不错', bg: '#8FBC8F', color: '#fff' },
+    okay:  { label: '一般', bg: '#C4A35A', color: '#fff' },
+    bad:   { label: '低落', bg: '#A0707A', color: '#fff' }
   };
 
   var STATUS_META = {
@@ -970,6 +1085,7 @@
 
   var SPINE_COLORS = ['navy','moss','gold','rose','teal'];
   var draggedChapterId = null;
+  var autoSaveTimer = null;  // auto-save debounce timer
   function spineColorFor(id){
     var hash = 0;
     for (var i=0;i<id.length;i++){ hash = (hash*31 + id.charCodeAt(i)) >>> 0; }
@@ -1044,7 +1160,8 @@
       if (result.data && result.data.data){
         state.books = result.data.data.books || [];
         state.chapters = result.data.data.chapters || [];
-        state.checkins = result.data.data.checkins || [];
+        // migrate: if checkins is old string array, convert to new object format
+        state.checkins = migrateCheckins(result.data.data.checkins || []);
       } else {
         state.books = [];
         state.chapters = [];
@@ -1280,6 +1397,17 @@
     showToast('已保存');
   }
 
+  // auto-save: updates data and persists, but keeps editing mode active
+  function autoSaveChapter(chapterId, title, quote, content){
+    var ch = state.chapters.find(function(c){ return c.id === chapterId; });
+    if (!ch) return;
+    ch.title = title.trim();
+    ch.quote = (quote || '').trim();
+    ch.content = content.trim();
+    ch.updatedAt = Date.now();
+    persist();
+  }
+
   function deleteChapter(chapterId){
     state.chapters = state.chapters.filter(function(c){ return c.id !== chapterId; });
     state.pendingDelete = null;
@@ -1307,40 +1435,41 @@
     return y + '-' + m + '-' + day;
   }
 
-  function isCheckedIn(dateStr){
-    return state.checkins.indexOf(dateStr) !== -1;
+  // Migrate old string[] checkins to new object[] format
+  function migrateCheckins(arr){
+    if (!arr || !arr.length) return [];
+    if (typeof arr[0] === 'object') return arr;
+    return arr.map(function(date){ return { date: date, mood: 'good' }; });
   }
 
-  function toggleTodayCheckin(){
+  function getMood(dateStr){
+    var entry = state.checkins.find(function(c){ return c.date === dateStr; });
+    return entry ? entry.mood : null;
+  }
+
+  function isCheckedIn(dateStr){
+    return state.checkins.some(function(c){ return c.date === dateStr; });
+  }
+
+  function doCheckin(mood){
     var today = todayStr();
-    if (isCheckedIn(today)) return; // already checked in, no toggling off
-    state.checkins.push(today);
+    if (isCheckedIn(today)) return;
+    state.checkins.push({ date: today, mood: mood || 'good' });
+    state.showMoodPicker = false;
     persist();
     render();
-    showToast('打卡成功，继续加油！');
+    var moodLabel = MOODS[mood || 'good'] ? MOODS[mood || 'good'].label : '';
+    showToast('打卡成功，心情' + moodLabel + '，继续加油！');
   }
 
-  function getCurrentStreak(){
-    var streak = 0;
-    var offset = 0;
-    // if today not checked in yet, start counting from yesterday
-    if (!isCheckedIn(todayStr())){
-      offset = -1;
-    }
-    while (isCheckedIn(dateStrOffset(offset))){
-      streak++;
-      offset--;
-    }
-    return streak;
+  function openMoodPicker(){
+    state.showMoodPicker = true;
+    render();
   }
 
-  function getCheckinCalendarDays(numDays){
-    var days = [];
-    for (var i = numDays - 1; i >= 0; i--){
-      var ds = dateStrOffset(-i);
-      days.push({ date: ds, filled: isCheckedIn(ds), isToday: (i === 0) });
-    }
-    return days;
+  function closeMoodPicker(){
+    state.showMoodPicker = false;
+    render();
   }
 
 
@@ -1360,11 +1489,31 @@
     if (state.view === 'book' && state.selectedBookId){
       app.innerHTML = renderHeader() + renderBookDetail();
     } else if (state.view === 'checkin'){
-      app.innerHTML = renderHeader() + renderCheckinDetail();
+      app.innerHTML = renderHeader() + renderCheckinDetail() + renderMoodPicker();
     } else {
-      app.innerHTML = renderHeader() + renderLibrary();
+      app.innerHTML = renderHeader() + renderLibrary() + renderMoodPicker();
     }
     bindEvents();
+  }
+
+  function renderMoodPicker(){
+    if (!state.showMoodPicker) return '';
+    var html = '<div class="mood-overlay" data-action="close-mood-picker">'
+      + '<div class="mood-panel" onclick="event.stopPropagation()">'
+      +   '<div class="mood-title">今天心情如何？</div>'
+      +   '<div class="mood-options">';
+    var moodKeys = ['great', 'good', 'okay', 'bad'];
+    moodKeys.forEach(function(key){
+      var m = MOODS[key];
+      html += '<button class="mood-btn" data-action="submit-mood" data-mood="' + key + '">'
+        + '<span class="mood-dot" style="background:' + m.bg + '"></span>'
+        + '<span class="mood-label">' + m.label + '</span>'
+        + '</button>';
+    });
+    html +=   '</div>'
+      +   '<button class="mood-cancel" data-action="close-mood-picker">取消</button>'
+      + '</div></div>';
+    return html;
   }
 
   function renderAuthScreen(){
@@ -1440,13 +1589,15 @@
       // 第一行：座右铭 + 打卡
       var streak = getCurrentStreak();
       var checkedToday = isCheckedIn(todayStr());
+      var todayMood = checkedToday ? getMood(todayStr()) : null;
+      var btnContent = checkedToday
+        ? (todayMood && MOODS[todayMood] ? MOODS[todayMood].label + ' ✓' : '✓ 已打卡')
+        : '打卡';
       html += '<div class="motto-row">'
         + '<span class="motto-left">' + getMottoDisplay() + '</span>'
         + '<div class="checkin-mini">'
         +   '<span class="streak-text" data-action="open-checkin-detail">' + streak + ' 天</span>'
-        +   '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
-        +     (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
-        +   '</button>'
+        +   '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>' + btnContent + '</button>'
         + '</div>'
         + '</div>';
 
@@ -1500,6 +1651,10 @@
 
     var streak = getCurrentStreak();
     var checkedToday = isCheckedIn(todayStr());
+    var todayMood = checkedToday ? getMood(todayStr()) : null;
+    var btnContent = checkedToday
+      ? (todayMood && MOODS[todayMood] ? MOODS[todayMood].emoji + ' ' + MOODS[todayMood].label : '✓ 已打卡')
+      : '打卡';
 
     return ''
     + '<div class="dashboard">'
@@ -1507,9 +1662,7 @@
     +     '<span class="total-books">📚 ' + counts.all + ' 本</span>'
     +     '<div class="checkin-line">'
     +       '<span class="streak-text" data-action="open-checkin-detail">连续打卡 ' + streak + ' 天</span>'
-    +       '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>'
-    +         (checkedToday ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已打卡' : '打卡')
-    +       '</button>'
+    +       '<button class="checkin-btn ' + (checkedToday ? 'done' : '') + '" data-action="checkin-today"' + (checkedToday ? ' disabled' : '') + '>' + btnContent + '</button>'
     +     '</div>'
     +   '</div>'
     + '</div>';
@@ -1539,12 +1692,61 @@
     // 日期格子
     for (var d = 1; d <= daysInMonth; d++){
       var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-      var filled = isCheckedIn(dateStr);
+      var mood = getMood(dateStr);
       var isToday = (d === now.getDate());
-      var cls = 'checkin-day' + (filled ? ' filled' : '') + (isToday && !filled ? ' today' : '');
-      calendarHtml += '<div class="' + cls + '">' + d + '</div>';
+      var style = mood ? 'background:' + MOODS[mood].bg + ';color:#fff;' : (isToday ? '' : '');
+      var cls = 'checkin-day' + (isToday && !mood ? ' today' : '');
+      var title = mood ? MOODS[mood].label : (isToday ? '今日' : '');
+      calendarHtml += '<div class="' + cls + '"' + (style ? ' style="' + style + '"' : '') + ' title="' + title + '">' + d + '</div>';
     }
     calendarHtml += '</div>';
+    var legendHtml = '<div class="checkin-legend">';
+    var moodKeys = ['great','good','okay','bad'];
+    moodKeys.forEach(function(key){
+      var m = MOODS[key];
+      legendHtml += '<span><span class="legend-dot" style="background:' + m.bg + '"></span>' + m.label + '</span>';
+    });
+    legendHtml += '</div>';
+
+    // 本月心情统计
+    var monthMoodCounts = { great: 0, good: 0, okay: 0, bad: 0 };
+    var monthCheckins = 0;
+    for (var md = 1; md <= daysInMonth; md++){
+      var mDate = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(md).padStart(2, '0');
+      var mMood = getMood(mDate);
+      if (mMood && monthMoodCounts.hasOwnProperty(mMood)){
+        monthMoodCounts[mMood]++;
+        monthCheckins++;
+      }
+    }
+    var mostMood = null, mostCount = 0;
+    for (var k in monthMoodCounts){
+      if (monthMoodCounts[k] > mostCount){
+        mostCount = monthMoodCounts[k];
+        mostMood = k;
+      }
+    }
+    var statsHtml = '<div class="checkin-stats">'
+      + '<div class="stats-item">'
+      +   '<div class="stats-num">' + monthCheckins + '</div>'
+      +   '<div class="stats-label">本月打卡</div>'
+      + '</div>'
+      + '<div class="stats-item">'
+      +   '<div class="stats-num">' + (mostMood ? MOODS[mostMood].label : '—') + '</div>'
+      +   '<div class="stats-label">最常见心情</div>'
+      + '</div>'
+      + '<div class="stats-bar-wrap">';
+    for (var bk = 0; bk < moodKeys.length; bk++){
+      var bkKey = moodKeys[bk];
+      var bkCount = monthMoodCounts[bkKey];
+      var bkPct = monthCheckins > 0 ? Math.round(bkCount / monthCheckins * 100) : 0;
+      statsHtml += '<div class="stats-bar-row">'
+        + '<div class="stats-bar-label">' + MOODS[bkKey].label + '</div>'
+        + '<div class="stats-bar-track"><div class="stats-bar-fill" style="width:' + bkPct + '%;background:' + MOODS[bkKey].bg + '"></div></div>'
+        + '<div class="stats-bar-count">' + bkCount + '</div>'
+        + '</div>';
+    }
+    statsHtml += '</div></div>';
 
     return ''
     + '<div class="checkin-detail-header">'
@@ -1561,7 +1763,9 @@
     + '<div class="checkin-calendar-section">'
     +   '<h3>' + monthName + '</h3>'
     +   calendarHtml
-    + '</div>';
+    +   legendHtml
+    + '</div>'
+    + statsHtml;
   }
 
   function renderFilterTab(key, label, count){
@@ -1868,10 +2072,12 @@
           setTimeout(function(){ var el = document.getElementById('edit-content-' + id); if (el) el.focus(); }, 0);
           break;
         case 'cancel-edit-chapter':
+          clearTimeout(autoSaveTimer);
           state.editingChapterId = null;
           render();
           break;
         case 'save-chapter':
+          clearTimeout(autoSaveTimer);
           submitEditChapter(id);
           break;
         case 'delete-chapter':
@@ -1915,7 +2121,13 @@
           window.scrollTo(0,0);
           break;
         case 'checkin-today':
-          toggleTodayCheckin();
+          openMoodPicker();
+          break;
+        case 'submit-mood':
+          doCheckin(target.getAttribute('data-mood'));
+          break;
+        case 'close-mood-picker':
+          closeMoodPicker();
           break;
         case 'submit-login':
           handleLogin();
@@ -1995,6 +2207,30 @@
         handleSearchInput();
       });
     }
+
+    // auto-save for chapter edit fields (debounced: save after 1.5s of inactivity)
+    var editTitleEl = document.getElementById('edit-title-' + state.editingChapterId);
+    var editQuoteEl = document.getElementById('edit-quote-' + state.editingChapterId);
+    var editContentEl = document.getElementById('edit-content-' + state.editingChapterId);
+
+    function scheduleAutoSave(){
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(function(){
+        var id = state.editingChapterId;
+        if (!id) return;
+        var tEl = document.getElementById('edit-title-' + id);
+        var qEl = document.getElementById('edit-quote-' + id);
+        var cEl = document.getElementById('edit-content-' + id);
+        if (!tEl) return;
+        var title = tEl.value.trim();
+        if (!title) return; // don't auto-save with empty title
+        autoSaveChapter(id, title, qEl ? qEl.value : '', cEl ? cEl.value : '');
+      }, 1500);
+    }
+
+    [editTitleEl, editQuoteEl, editContentEl].forEach(function(el){
+      if (el) el.addEventListener('input', scheduleAutoSave);
+    });
 
     // chapter drag-to-reorder
     app.ondragstart = function(e){
