@@ -1,0 +1,21 @@
+{
+  "name": "书斋",
+  "short_name": "书斋",
+  "description": "记录读过的每一本书，梳理每一章的收获",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F2F2ED",
+  "theme_color": "#2B3A55",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

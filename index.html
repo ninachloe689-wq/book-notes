@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>读书笔记</title>
+<meta name="theme-color" content="#2B3A55">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Noto+Serif+SC:wght@400;500;600&family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&family=ZCOOL+XiaoWei&family=KaiTi&display=swap" rel="stylesheet">
 <style>
@@ -1125,6 +1127,14 @@
   var SPINE_COLORS = ['navy','moss','gold','rose','teal'];
   var draggedChapterId = null;
   var autoSaveTimer = null;
+  var deferredPrompt = null;
+
+  // 监听 PWA 安装提示
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
   function spineColorFor(id){
     var hash = 0;
     for (var i=0;i<id.length;i++){ hash = (hash*31 + id.charCodeAt(i)) >>> 0; }
@@ -1602,6 +1612,7 @@
     +   '<div class="header-actions">'
     +     '<span class="user-email-btn" data-action="toggle-user-menu">' + escapeHtml(userEmail) + '</span>'
     +     '<div class="user-dropdown" id="user-dropdown" style="display:none;">'
+    +       '<button class="btn btn-ghost btn-sm" data-action="install-app">📱 安装到桌面</button>'
     +       '<button class="btn btn-ghost btn-sm" data-action="logout">退出登录</button>'
     +     '</div>'
     +   '</div>'
@@ -2210,6 +2221,19 @@
           var dropdown = document.getElementById('user-dropdown');
           if (dropdown) dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
           break;
+        case 'install-app':
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choice) {
+              if (choice.outcome === 'accepted') {
+                showToast('安装成功！');
+              }
+              deferredPrompt = null;
+            });
+          } else {
+            showToast('请用浏览器打开后，点击地址栏右侧安装图标', 'error');
+          }
+          break;
         case 'logout':
           handleLogout();
           break;
@@ -2454,6 +2478,17 @@
 
   loadData();
 })();
+
+// PWA Service Worker 注册
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      console.log('Service Worker registered');
+    }).catch(function(err) {
+      console.log('Service Worker registration failed:', err);
+    });
+  });
+}
 </script>
 </body>
 </html>
