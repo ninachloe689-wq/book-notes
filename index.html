@@ -908,12 +908,25 @@
   }
   .checkin-calendar-nav button:hover{ background:var(--line-soft); }
   .checkin-calendar-nav .current-month{ font-weight:600; font-size:15px; }
+  .checkin-weekdays{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    margin-bottom:4px;
+  }
+  .checkin-weekdays .weekday-label{
+    font-size:11px;
+    color:var(--ink-faint);
+    text-align:center;
+    font-weight:600;
+    letter-spacing:0.5px;
+    padding:4px 0;
+  }
   .checkin-calendar{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
-    gap:4px 3px;
+    grid-auto-rows:44px;
+    gap:3px;
     width:100%;
-    margin-top:4px;
   }
   .checkin-calendar .weekday-label{
     font-size:11px;
@@ -924,7 +937,7 @@
     padding-bottom:2px;
   }
   .checkin-day{
-    height:44px;
+    aspect-ratio:1;
     border-radius:8px;
     background:var(--surface);
     border:1.5px solid var(--line-soft);
@@ -940,6 +953,46 @@
   .checkin-day.today{ border-color:var(--navy); border-width:2px; font-weight:700; }
   .checkin-day.empty{ background:transparent; border-color:transparent; }
   .checkin-day.has-data{ cursor:pointer; }
+
+  /* 样式A: Apple圆点风格 */
+  body.cal-style-apple .checkin-day{ background:transparent; border-color:transparent; font-size:14px; height:44px; position:relative; }
+  body.cal-style-apple .checkin-day span{ position:relative; z-index:1; }
+  body.cal-style-apple .checkin-day::before{ content:''; position:absolute; width:36px;height:36px;border-radius:50%;background:transparent;z-index:0; }
+  body.cal-style-apple .checkin-day.filled::before{ background:var(--green-soft); }
+  body.cal-style-apple .checkin-day.filled span{ color:var(--green); font-weight:600; }
+  body.cal-style-apple .checkin-day.today::before{ background:var(--blue-soft); }
+  body.cal-style-apple .checkin-day.today span{ color:var(--blue); font-weight:600; }
+  body.cal-style-apple .checkin-day.today.filled::before{ background:var(--green-soft); }
+  body.cal-style-apple .mood-great::before{ background:var(--green-soft); }
+  body.cal-style-apple .mood-great span{ color:var(--green); }
+  body.cal-style-apple .mood-good::before{ background:#E8F9EC; }
+  body.cal-style-apple .mood-good span{ color:#28A745; }
+  body.cal-style-apple .mood-okay::before{ background:var(--gold-soft); }
+  body.cal-style-apple .mood-okay span{ color:var(--gold); }
+  body.cal-style-apple .mood-bad::before{ background:var(--rose-soft); }
+  body.cal-style-apple .mood-bad span{ color:var(--rose); }
+  body.cal-style-apple .mood-none::before{ background:var(--line-soft); }
+
+  /* 样式B: Notion格子风格 */
+  body.cal-style-notion .checkin-day{ background:var(--surface); border:1px solid var(--line); border-radius:10px; font-size:14px; }
+  body.cal-style-notion .checkin-day.filled{ background:#EDE9FE; border-color:#A78BFA; color:#7C3AED; font-weight:600; }
+  body.cal-style-notion .checkin-day.today{ background:#EFF6FF; border-color:var(--blue); color:var(--blue); font-weight:700; border-width:2px; }
+  body.cal-style-notion .checkin-day.empty{ background:transparent; border-color:transparent; }
+  body.cal-style-notion .mood-great{ background:#DCFCE7; border-color:#22C55E; color:#16A34A; }
+  body.cal-style-notion .mood-good{ background:#FEF9C3; border-color:#EAB308; color:#CA8A04; }
+  body.cal-style-notion .mood-okay{ background:#FED7AA; border-color:#F97316; color:#C2410C; }
+  body.cal-style-notion .mood-bad{ background:#FECACA; border-color:#EF4444; color:#DC2626; }
+
+  /* 样式C: GitHub方块风格 */
+  body.cal-style-github .checkin-day{ background:var(--surface); border:1px solid var(--line); border-radius:4px; font-size:12px; }
+  body.cal-style-github .checkin-day.filled{ background:#4E6B4E; border-color:#4E6B4E; color:#fff; }
+  body.cal-style-github .checkin-day.today{ border-color:var(--navy); border-width:2px; font-weight:700; }
+  body.cal-style-github .checkin-day.empty{ background:transparent; border-color:transparent; }
+  body.cal-style-github .mood-great{ background:#216E39; }
+  body.cal-style-github .mood-good{ background:#4E6B4E; }
+  body.cal-style-github .mood-okay{ background:#8B8B00; }
+  body.cal-style-github .mood-bad{ background:#6E4040; }
+
   .checkin-simple{
     display:flex;
     align-items:center;
@@ -1081,6 +1134,37 @@
     .checkin-day{ font-size:13px; min-width:22px; }
     .checkin-calendar .weekday-label{ font-size:10px; }
   }
+  /* 日历样式切换器 */
+  .style-switcher{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .style-switcher button{
+    font-family:inherit;
+    font-size:12px;
+    font-weight:500;
+    padding:6px 14px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .style-switcher button:hover{ background:var(--line-soft); }
+  .style-switcher button.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:#fff;
+  }
+  .style-switcher button[data-style="apple"] { background:var(--blue-soft); border-color:var(--blue); color:var(--blue); }
+  .style-switcher button[data-style="apple"].active { background:var(--blue); color:#fff; }
+  .style-switcher button[data-style="notion"] { background:#EDE9FE; border-color:#A78BFA; color:#7C3AED; }
+  .style-switcher button[data-style="notion"].active { background:#7C3AED; color:#fff; }
+  .style-switcher button[data-style="github"] { background:#FFF7ED; border-color:#FB923C; color:#EA580C; }
+  .style-switcher button[data-style="github"].active { background:#EA580C; color:#fff; }
 </style>
 </head>
 <body>
@@ -1110,6 +1194,7 @@
     pendingDelete: null,    // { type:'book'|'chapter', id }
     loaded: false,
     libraryFilter: 'all',   // 'all' | 'want' | 'reading' | 'done'
+    calStyle: 'default',    // 'default' | 'apple' | 'notion' | 'github'
     searchQuery: '',
     draftBookTitle: '',
     draftBookAuthor: '',
@@ -1759,10 +1844,11 @@
     var daysInMonth = new Date(year, month + 1, 0).getDate();
     var todayIsThisMonth = (year === now.getFullYear() && month === now.getMonth());
 
-    var calendarHtml = '<div class="checkin-calendar">';
+    var calendarHtml = '<div class="checkin-weekdays">';
     ['日','一','二','三','四','五','六'].forEach(function(d){
       calendarHtml += '<div class="weekday-label">' + d + '</div>';
     });
+    calendarHtml += '</div><div class="checkin-calendar">';
     for (var i = 0; i < firstDay; i++){
       calendarHtml += '<div class="checkin-day empty"></div>';
     }
@@ -1775,7 +1861,7 @@
       var cls = 'checkin-day ' + moodClass + (isToday ? ' today' : '');
       var tooltip = hasData ? (mood ? dateStr + ' ' + (MOODS[mood] ? MOODS[mood].label : mood) : dateStr + ' 已打卡') : '';
       var extraAttr = tooltip ? ' data-tooltip="' + tooltip + '"' : '';
-      calendarHtml += '<div class="' + cls + '"' + extraAttr + '>' + d + '</div>';
+      calendarHtml += '<div class="' + cls + '"' + extraAttr + '><span>' + d + '</span></div>';
     }
     calendarHtml += '</div>';
 
@@ -1785,6 +1871,12 @@
     +     '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
     +     '返回'
     +   '</button>'
+    + '</div>'
+    + '<div class="style-switcher">'
+    +   '<button data-action="switch-cal-style" data-style="default" class="' + (state.calStyle==='default'?'active':'') + '">当前样式</button>'
+    +   '<button data-action="switch-cal-style" data-style="apple" class="' + (state.calStyle==='apple'?'active':'') + '">Apple风格</button>'
+    +   '<button data-action="switch-cal-style" data-style="notion" class="' + (state.calStyle==='notion'?'active':'') + '">Notion风格</button>'
+    +   '<button data-action="switch-cal-style" data-style="github" class="' + (state.calStyle==='github'?'active':'') + '">GitHub风格</button>'
     + '</div>'
     + '<div class="checkin-simple">'
     +   '<span class="checkin-stat">连续 <strong>' + streak + '</strong> 天</span>'
@@ -2202,6 +2294,12 @@
           } else {
             state.checkinCalendarMonth--;
           }
+          render();
+          break;
+        case 'switch-cal-style':
+          var newStyle = target.getAttribute('data-style');
+          state.calStyle = newStyle;
+          document.body.className = newStyle === 'default' ? '' : 'cal-style-' + newStyle;
           render();
           break;
         case 'checkin-next-month':
