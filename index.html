@@ -248,9 +248,11 @@
     align-items:center;
     justify-content:space-between;
     margin-bottom:10px;
+    gap:12px;
   }
   .motto-left{
     flex:1;
+    min-width:0;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
@@ -261,13 +263,24 @@
     font-style:italic;
     color:var(--ink-soft);
     cursor:pointer;
-    max-width:100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
   }
   .motto-row .motto-display:hover, .motto-row .motto-empty:hover{ color:var(--ink); }
   .motto-row .motto-empty{ color:var(--ink-faint); }
+
+  /* checkin mini - 同一行显示 */
+  .checkin-mini{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+  }
+  .checkin-mini .streak-text{
+    font-size:13px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .checkin-mini .streak-text:hover{ color:var(--ink); }
 
   /* shelf actions row */
   .shelf-actions{
@@ -899,43 +912,43 @@
     display:grid;
     grid-template-columns:repeat(7, 1fr);
     gap:3px;
+    width:100%;
   }
   .checkin-calendar .weekday-label{
     font-size:11px;
     color:var(--ink-faint);
     text-align:center;
-    padding:4px 0;
+    padding:6px 0 4px;
   }
   .checkin-day{
     aspect-ratio:1;
-    border-radius:3px;
+    border-radius:4px;
     background:var(--line-soft);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:11px;
-    color:var(--ink-faint);
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
     cursor:default;
-    min-width:0;
+    min-width:28px;
+    max-width:44px;
+    margin:0 auto;
   }
   .checkin-day.filled{ background:var(--moss); color:#fff; }
-  .checkin-day.today{ box-shadow: inset 0 0 0 1.5px var(--ink-faint); }
+  .checkin-day.today{ box-shadow: inset 0 0 0 2px var(--navy); }
   .checkin-day.empty{ background:transparent; }
   .checkin-day.has-data{ cursor:pointer; }
-  .checkin-day[data-tooltip]:hover::after{
-    content:attr(data-tooltip);
-    position:absolute;
-    bottom:100%;
-    left:50%;
-    transform:translateX(-50%);
-    background:var(--ink);
-    color:#fff;
-    font-size:11px;
-    padding:4px 8px;
-    border-radius:4px;
-    white-space:nowrap;
-    z-index:10;
+  .checkin-simple{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:20px;
   }
+  .checkin-simple strong{ color:var(--ink); font-weight:600; }
+  .checkin-divider{ color:var(--line); }
 
   /* 心情颜色 */
   .mood-great{ background:#5A9A6E !important; }
@@ -1064,8 +1077,9 @@
     .detail-actions .btn{ flex:1; }
   }
   @media (max-width:400px){
-    .checkin-day{ font-size:9px; }
+    .checkin-day{ font-size:12px; }
     .checkin-calendar .weekday-label{ font-size:10px; }
+    .checkin-day{ min-width:22px; }
   }
 </style>
 </head>
