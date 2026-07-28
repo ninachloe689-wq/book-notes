@@ -1,5 +1,5 @@
-// Service Worker for PWA
-var CACHE_NAME = 'bookshelf-v1';
+﻿// Service Worker for PWA
+var CACHE_NAME = 'bookshelf-v2';
 var urlsToCache = [
   '/',
   '/index.html',
