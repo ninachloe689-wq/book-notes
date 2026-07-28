@@ -907,7 +907,11 @@
     border-radius:6px;
   }
   .checkin-calendar-nav button:hover{ background:var(--line-soft); }
-  .checkin-calendar-nav .current-month{ font-weight:600; font-size:15px; }
+  .checkin-calendar-nav .current-month{ font-weight:600; font-size:15px; min-width:100px; text-align:center; }
+  .checkin-calendar-nav{ gap:4px; flex-wrap:wrap; justify-content:center; }
+  .checkin-today-btn{ font-size:12px; padding:6px 10px; border:1px solid var(--navy); color:var(--navy); background:transparent; border-radius:6px; cursor:pointer; margin-left:8px; font-family:inherit; }
+  .checkin-today-btn:hover{ background:var(--navy); color:#fff; }
+  .checkin-calendar-nav button[disabled]{ opacity:0.35; cursor:not-allowed; pointer-events:none; }
   .checkin-calendar{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
@@ -953,6 +957,7 @@
 
   /* 心情颜色 */
   .mood-great{ background:#5A9A6E !important; }
+  .mood-custom-cell{ background:#8A8E94 !important; color:#fff; }
   .mood-good{ background:#8FBC8F !important; }
   .mood-okay{ background:#C4A35A !important; }
   .mood-bad{ background:#A0707A !important; }
@@ -1536,7 +1541,8 @@
     state.showMoodPicker = false;
     persist();
     render();
-    showToast('打卡成功，心情' + (mood || '已记录') + '，继续加油！');
+    var moodLabel = (mood && MOODS[mood]) ? MOODS[mood].label : (mood || '已记录');
+    showToast('打卡成功，心情' + moodLabel + '，继续加油！');
   }
 
   function closeMoodPicker(){
@@ -1747,20 +1753,18 @@
     var month = state.checkinCalendarMonth;
     var now = new Date();
 
-    // 日历头部导航
-    var prevDisabled = (year === now.getFullYear() && month <= now.getMonth()) ? ' disabled' : '';
-    var nextYear = month === 11 ? year + 1 : year;
-    var nextMonth = month === 11 ? 0 : month + 1;
-    var prevYear = month === 0 ? year - 1 : year;
-    var prevMonth = month === 0 ? 11 : month - 1;
-    var monthName = new Date(year, month, 1).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
+    // 日历头部导航：禁用逻辑——只能禁'前往未来月'，保留 prev 永远可点
+    var atCurrentMonth = (year === now.getFullYear() && month >= now.getMonth());
+    var nextDisabled = atCurrentMonth ? ' disabled' : '';
+    var monthName = year + '年' + (month + 1) + '月';
 
-    var firstDay = new Date(year, month, 1).getDay();
+    // 周首改为周一：把 getDay()(0=Sun..6=Sat) 换算为 (0=Mon..6=Sun)
+    var firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
     var daysInMonth = new Date(year, month + 1, 0).getDate();
     var todayIsThisMonth = (year === now.getFullYear() && month === now.getMonth());
 
     var calendarHtml = '<div class="checkin-calendar">';
-    ['日','一','二','三','四','五','六'].forEach(function(d){
+    ['一','二','三','四','五','六','日'].forEach(function(d){
       calendarHtml += '<div class="weekday-label">' + d + '</div>';
     });
     for (var i = 0; i < firstDay; i++){
@@ -1771,7 +1775,11 @@
       var mood = getMood(dateStr);
       var isToday = (todayIsThisMonth && d === now.getDate());
       var hasData = isCheckedIn(dateStr);
-      var moodClass = mood ? 'mood-' + mood : (hasData ? 'mood-none' : '');
+      var isPresetMood = mood && MOODS[mood];
+      var isCustomMood = mood && !isPresetMood;
+      var moodClass = isPresetMood ? ('mood-' + mood)
+                    : isCustomMood ? 'mood-custom-cell'
+                    : (hasData ? 'mood-none' : '');
       var cls = 'checkin-day ' + moodClass + (isToday ? ' today' : '');
       var tooltip = hasData ? (mood ? dateStr + ' ' + (MOODS[mood] ? MOODS[mood].label : mood) : dateStr + ' 已打卡') : '';
       var extraAttr = tooltip ? ' data-tooltip="' + tooltip + '"' : '';
@@ -1793,13 +1801,14 @@
     + '</div>'
     + '<div class="checkin-calendar-section">'
     +   '<div class="checkin-calendar-nav">'
-    +     '<button data-action="checkin-prev-month"' + prevDisabled + '>'
+    +     '<button data-action="checkin-prev-month" aria-label="上个月">'
     +       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
     +     '</button>'
     +     '<span class="current-month">' + monthName + '</span>'
-    +     '<button data-action="checkin-next-month">'
+    +     '<button data-action="checkin-next-month"' + nextDisabled + ' aria-label="下个月">'
     +       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>'
     +     '</button>'
+    +     (atCurrentMonth ? '' : '<button class="checkin-today-btn" data-action="checkin-today-month">回到本月</button>')
     +   '</div>'
     +   calendarHtml
     + '</div>'
@@ -1831,7 +1840,7 @@
       +   '</div>'
       +   '<div class="mood-custom">'
       +     '<input type="text" class="mood-custom-input" id="mood-custom-input" placeholder="自定义心情…" maxlength="20">'
-      +     '<button class="mood-submit" data-action="submit-mood-custom">记录心情</button>'
+      +     '<button class="mood-submit" data-action="submit-mood-custom" id="mood-custom-submit" disabled>记录心情</button>'
       +   '</div>'
       +   '<button class="mood-cancel" data-action="close-mood-picker">取消</button>'
       + '</div></div>';
@@ -2049,6 +2058,13 @@
   /* ---------- events ---------- */
 
   function bindEvents(){
+    // 监听自定义心情输入：非空才启用提交按钮
+    document.addEventListener('input', function(e){
+      if (e.target && e.target.id === 'mood-custom-input'){
+        var btn = document.getElementById('mood-custom-submit');
+        if (btn){ btn.disabled = !e.target.value.trim(); }
+      }
+    });
     var app = document.getElementById('app');
     app.onclick = function(e){
       var target = e.target.closest('[data-action]');
@@ -2211,6 +2227,11 @@
           } else {
             state.checkinCalendarMonth++;
           }
+          render();
+          break;
+        case 'checkin-today-month':
+          state.checkinCalendarYear = new Date().getFullYear();
+          state.checkinCalendarMonth = new Date().getMonth();
           render();
           break;
         case 'submit-mood':
