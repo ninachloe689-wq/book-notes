@@ -1,5 +1,7 @@
 ﻿// Service Worker for PWA
-var CACHE_NAME = 'bookshelf-v2';
+self.skipWaiting();
+self.addEventListener('install', function(event) { event.waitUntil(self.skipWaiting()); });
+var CACHE_NAME = 'bookshelf-v3';
 var urlsToCache = [
   '/',
   '/index.html',
@@ -17,6 +19,7 @@ self.addEventListener('install', function(event) {
 });
 
 // 激活
+self.addEventListener('activate', function(event) { event.waitUntil(self.clients.claim()); });
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
@@ -33,13 +36,15 @@ self.addEventListener('activate', function(event) {
 
 // 拦截请求
 self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        if (response) {
-          return response;
+    event.respondWith(
+      fetch(event.request).then(function(response) {
+        if (response && response.status === 200) {
+          var clone = response.clone();
+          caches.open(CACHE_NAME).then(function(cache) { cache.put(event.request, clone); });
         }
-        return fetch(event.request);
+        return response;
+      }).catch(function() {
+        return caches.match(event.request);
       })
-  );
-});
+    );
+  });
