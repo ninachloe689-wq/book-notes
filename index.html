@@ -1587,13 +1587,15 @@
       bindEvents();
       return;
     }
+    var body = '';
     if (state.view === 'book' && state.selectedBookId){
-      app.innerHTML = renderHeader() + renderBookDetail();
+      body = renderHeader() + renderBookDetail();
     } else if (state.view === 'checkin'){
-      app.innerHTML = renderHeader() + renderCheckinDetail();
+      body = renderHeader() + renderCheckinDetail();
     } else {
-      app.innerHTML = renderHeader() + renderLibrary();
+      body = renderHeader() + renderLibrary();
     }
+    app.innerHTML = body + renderMoodPicker();
     bindEvents();
   }
 

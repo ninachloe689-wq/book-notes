@@ -1,0 +1,6 @@
+# credentials / temp files
+git-cred*
+Users86284*
+*.tmp
+node_modules/
+.DS_Store
